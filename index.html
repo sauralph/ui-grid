@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>index</title>
+	<meta name="generator" content="TextMate http://macromates.com/"/>
+	<meta name="author" content="Ezequiel Nuske"/>
+	<!-- Date: 2010-11-19 -->
+	<link type="text/css" href="lib/css/smoothness/jquery-ui-1.8.6.custom.css" rel="stylesheet"/>	
+	<script type="text/javascript" src="lib/js/jquery-1.4.2.min.js"></script>
+	<script type="text/javascript" src="lib/js/jquery-ui-1.8.6.custom.min.js"></script>
+	<!-- secondary libs -->
+	<script src="lib/js/jquery.hoverIntent.minified.js" type="text/javascript" charset="utf-8"></script>
+	<script src="lib/js/bgiframe_2.1.1/jquery.bgiframe.min.js" type="text/javascript" charset="utf-8"></script>
+	<!--[if IE]><script src="../other_libs/excanvas_r3/excanvas.js" type="text/javascript" charset="utf-8"></script><![endif]-->
+	<script src="lib/js/jquery.bt.min.js" type="text/javascript" charset="utf-8"></script>	
+	<!-- cool easing stuff for animations -->
+	<script src="lib/js/jquery.easing.1.3.js" type="text/javascript" charset="utf-8"></script>
+	<!-- /easing -->
+	
+	<style type="text/css" media="screen">
+		body{ font: 62.5% "Trebuchet MS", sans-serif; margin: 50px;}
+
+		table.ui-grid{
+			border-collapse:collapse;
+		}
+
+		table.ui-grid td,table.ui-grid th{
+			/*border-top:1px solid;*/
+			border:inherit;
+			padding:0.5em 1em 0.5em 1em;
+			text-align:center;
+		}
+		table.ui-grid th{
+		padding:0.5em 3em 0.25em 3em;
+		cursor:pointer;
+		font-weight:normal;
+		}
+		table.ui-grid th span.ui-icon{
+			float:right;
+			position:absolute;
+			
+		}
+		.ui-grid-caption{
+			padding:0.5em 1em 0.3em;
+			border-bottom:transparent ;
+			
+		}
+		
+		ul.column-menu {
+			padding:0em;
+			
+		}
+		
+		ul.column-menu li{
+			list-style-type:none;
+			text-align:center;
+			padding-top:0.5em;
+			padding-bottom:0.5em;
+			width:100%;
+			cursor:pointer;
+			
+		}
+		
+		ul.column-menu li:hover{
+			background-color:silver;
+			color:black;
+		}
+		table.ui-grid td{
+			border-top:1px dotted;
+		}
+	</style>
+	<script type="text/javascript" charset="utf-8">
+		//styling test
+		$(document).ready(function(){
+			$('table')
+				.addClass("ui-widget ui-corner-all")
+				.find('caption')
+					.addClass("ui-widget-header ui-grid-caption")
+				.end()
+				.addClass("ui-widget-content ui-grid")
+				.find("tfoot>tr")
+					.addClass("ui-state-default")
+				.end()
+				.find("tr:has(th)")
+					.addClass("ui-state-default")
+					.find("th")
+					.click(function(){
+						$(this).siblings("th").removeClass("ui-state-active");
+						$(this).addClass("ui-state-active");
+					})
+					.hover(function(){
+						$(this).addClass("ui-state-hover");
+					},function(){
+						$(this).removeClass("ui-state-hover");
+					})
+					.end()
+				.end()
+				.find("tbody>tr")
+					.hover(function(){
+						$(this).addClass("ui-state-hover");
+					},function(){
+						$(this).removeClass("ui-state-hover");
+					})
+					
+					
+					
+/*.bt("<ul class='column-menu'><li>Sort AscendingSort AscendingSort AscendingSort AscendingSort Ascending</li><li>Sort Ascending</li><li>Sort Descending</li></ul>",{
+						trigger: 'click',
+					  padding: 20,
+					  width: 100,
+					  spikeLength: 20,
+					  spikeGirth: 40,
+					  cornerRadius: 10,
+					  fill: 'rgba(0, 0, 0, .65)',
+					  strokeWidth:2,
+					  strokeStyle: '#FFFFFF',
+					  cssStyles: {color: '#FFF', fontWeight: 'bold'},
+						padding:'2px',
+					  shadow: true,
+					  shadowOffsetX: 3,
+					  shadowOffsetY: 3,
+					  shadowBlur: 8,
+					  shadowColor: 'rgba(0,0,0,.9)',
+					  shadowOverlap: false,
+						positions:'bottom'
+					})*/
+						//.prepend($("<span>",{class:"ui-icon ui-icon-carat-1-s"}));
+				
+		
+		});
+	</script>
+	
+</head>
+<body>
+<table border="0" cellspacing="5" cellpadding="5" summary="This is a Sample Table">
+	<caption>Sample Table</caption>
+	<thead>
+		<tr><th>Column 1</th><th>Column 2</th><th>Column 3</th><th>Column 4</th><th>Column 5</th><th>Column 6</th></tr>
+	</thead>
+	<tfoot>
+		<tr><td>Total 1</td><td>Total 2</td><td>Total 3</td><td>Total 4</td><td>Total 5</td><td>Total 6</td></tr>
+	</tfoot>
+	<tbody>
+		<tr><td>Column 1</td><td>Column 2</td><td>Column 3</td><td>Column 4</td><td>Column 5</td><td>Column 6</td></tr>
+		<tr><td>Column 1</td><td>Column 2</td><td>Column 3</td><td>Column 4</td><td>Column 5</td><td>Column 6</td></tr>
+		<tr><td>Column 1</td><td>Column 2</td><td>Column 3</td><td>Column 4</td><td>Column 5</td><td>Column 6</td></tr>
+		<tr><td>Column 1</td><td>Column 2</td><td>Column 3</td><td>Column 4</td><td>Column 5</td><td>Column 6</td></tr>
+		<tr><td>Column 1</td><td>Column 2</td><td>Column 3</td><td>Column 4</td><td>Column 5</td><td>Column 6</td></tr>
+		<tr><td>Column 1</td><td>Column 2</td><td>Column 3</td><td>Column 4</td><td>Column 5</td><td>Column 6</td></tr>
+		<tr><td>Column 1</td><td>Column 2</td><td>Column 3</td><td>Column 4</td><td>Column 5</td><td>Column 6</td></tr>
+		<tr><td>Column 1</td><td>Column 2</td><td>Column 3</td><td>Column 4</td><td>Column 5</td><td>Column 6</td></tr>
+		<tr><td>Column 1</td><td>Column 2</td><td>Column 3</td><td>Column 4</td><td>Column 5</td><td>Column 6</td></tr>
+		<tr><td>Column 1</td><td>Column 2</td><td>Column 3</td><td>Column 4</td><td>Column 5</td><td>Column 6</td></tr>
+	</tbody>
+
+</table>
+</body>
+</html>

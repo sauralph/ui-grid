@@ -1,0 +1,324 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Unit Test for UI-grid</title>
+	<meta name="generator" content="TextMate http://macromates.com/">
+	<meta name="author" content="Ezequiel Nuske">
+	<!-- Date: 2010-11-20 -->
+	<link type="text/css" href="lib/css/smoothness/jquery-ui-1.8.6.custom.css" rel="stylesheet"/>	
+	<script type="text/javascript" src="lib/js/jquery-1.4.2.min.js"></script>
+	<script type="text/javascript" src="lib/js/jquery-ui-1.8.6.custom.min.js"></script>
+	<script type="text/javascript" src="jquery.ui.grid.js"></script>
+	
+	<!-- QUNIT -->
+	<link rel="stylesheet" href="lib/qunit/qunit.css" type="text/css"/>
+	<script type="text/javascript" src="lib/qunit/qunit.js"></script>
+	<script type="text/javascript" charset="utf-8">
+		test("Base Check",function(){
+			expect(8);
+			ok( Array.prototype.push, "Array.push()" );
+			ok( Function.prototype.apply, "Function.apply()" );
+			ok( document.getElementById, "getElementById" );
+			ok( document.getElementsByTagName, "getElementsByTagName" );
+			ok( RegExp, "RegExp" );
+			ok( jQuery, "jQuery" );
+			ok( $, "$" );
+			ok( jQuery.ui.grid,"Grid")
+			
+		});
+		
+		test("Checking Skining",function(){
+			$expected = $("div#expected");
+			$result = $("div#result");
+			$source = $("div#source");
+			
+			equal($source.html(),$result.html(),"HTML match before Plugin");
+			
+			//applying Plugin
+			$result.find("table").grid();
+			
+			
+			
+			equal($result.find("table").siblings("div").length,$expected.find("table").siblings("div").length,"Header and Footer DIVs generated");
+			
+			equal($result.find("div div:first").text(),$expected.find("div div:first").text(),"Title matches expected");
+			
+			equal($result.find("div div:first").text(),$source.find("caption").text(),"Title matches source");
+			
+			equal($result.find("table").attr("class"),$expected.find("table").attr("class"),"Table Class matches");
+			
+			equal($result.find("th").attr("class"),$expected.find("th").attr("class"),"TH class matches");
+			
+			equal($result.find("td").attr("class"),$expected.find("td").attr("class"),"TD class matches");
+			
+			ok($result.find("th a").length,"TH has a link");
+			
+			ok($result.find("th span").length,"TH has an icon");
+			
+			ok($result.find("div.ui-grid-paging").length,"Has Paging Buttons")
+			
+		})
+		
+	</script>
+	
+	
+	<style type="text/css">
+		body { font-size: 62.5%; }
+
+		/* Grid
+		----------------------------------*/
+		.ui-grid { width: 500px; padding: .4em;  background-image: none; }
+		.ui-grid .ui-grid-content { width: 100%; border-collapse: collapse; }
+		.ui-grid table tbody td, .ui-grid .ui-grid-header, .ui-grid table thead a { padding: .4em;  }
+		.ui-grid table tbody td {  text-align: right; font-weight: normal;  }
+		.ui-grid .ui-grid-header, .ui-grid .ui-grid-footer { padding: .8em .4em; text-align: center; }
+		.ui-grid .ui-grid-footer { background-image: none; font-weight: normal; text-align: left; }
+		.ui-grid table thead a { display: block;  }
+		.ui-grid .ui-icon { float: right; }
+		.ui-grid .ui-grid-paging { float: right; }
+		.ui-grid .ui-grid-paging-prev { float: left; width: 16px; height: 16px; }
+		.ui-grid .ui-grid-paging-next { float: right; width: 16px; height: 16px; }
+		.ui-grid .ui-grid-results {  }
+	</style> 
+	
+	<script type="text/javascript">
+		$(function(){
+			$('div#expected tbody tr').hover(
+				function(){ $('td', this).addClass('ui-state-hover');},
+				function(){ $('td', this).removeClass('ui-state-hover');}
+			)
+			.toggle(
+				function(){ $('td', this).addClass('ui-state-highlight');},
+				function(){ $('td', this).removeClass('ui-state-highlight');}
+			);
+		});
+	</script>
+	
+	
+</head>
+<body>
+	<h1 id="qunit-header">QUnit Test for Ui.Grid</h1>
+  <h2 id="qunit-banner"></h2>
+  <h2 id="qunit-userAgent"></h2>
+  <ol id="qunit-tests">
+  </ol>
+<div id="result">
+	<table summary="Showing results 10-20">
+		<caption>jQuery UI Grid Header</caption>
+		<thead>
+			<tr>
+				<th>First</th>
+				<th>Second</th>
+				<th>Third</th>
+				<th>Fourth</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>0</td>
+				<td>1</td>
+				<td>2</td>
+
+				<td>3</td>
+			</tr>
+			<tr>
+				<td>342</td>
+				<td>165</td>
+				<td>2</td>
+				<td>331</td>
+
+			</tr>
+			<tr>
+				<td>0</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+			</tr>
+
+			<tr>
+				<td>342</td>
+				<td>165</td>
+				<td>2</td>
+				<td>331</td>
+			</tr>
+			<tr>
+				<td>0</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+			</tr>
+			<tr>
+				<td>342</td>
+				<td>165</td>
+				<td>2</td>
+				<td>331</td>
+			</tr>
+			<tr>
+				<td>0</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+			</tr>
+			<tr>
+				<td>342</td>
+				<td>165</td>
+				<td>2</td>
+				<td>331</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<div id="expected">
+	<div class="ui-grid ui-widget ui-widget-content ui-corner-all">
+		<div class="ui-grid-header ui-widget-header ui-corner-top">jQuery UI Grid Header</div>
+		<table class="ui-grid-content ui-widget-content">
+			<thead>
+
+				<tr>
+					<th class="ui-state-default"><a href="?sortCol=1&asc"><span class="ui-icon ui-icon-triangle-1-s" title="sort ascending"></span> First</a></th>
+					<th class="ui-state-default"><a href="?sortCol=2&asc"><span class="ui-icon ui-icon-triangle-1-s" title="sort ascending"></span> Second</a></th>
+					<th class="ui-state-default"><a href="?sortCol=3&asc"><span class="ui-icon ui-icon-triangle-1-s" title="sort ascending"></span> Third</a></th>
+					<th class="ui-state-default"><a href="?sortCol=4&asc"><span class="ui-icon ui-icon-triangle-1-s" title="sort ascending"></span> Fourth</a></th>
+
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="ui-widget-content">0</td>
+					<td class="ui-widget-content">1</td>
+					<td class="ui-widget-content">2</td>
+
+					<td class="ui-widget-content">3</td>
+				</tr>
+				<tr>
+					<td class="ui-widget-content">342</td>
+					<td class="ui-widget-content">165</td>
+					<td class="ui-widget-content">2</td>
+					<td class="ui-widget-content">331</td>
+
+				</tr>
+				<tr>
+					<td class="ui-widget-content">0</td>
+					<td class="ui-widget-content">1</td>
+					<td class="ui-widget-content">2</td>
+					<td class="ui-widget-content">3</td>
+				</tr>
+
+				<tr>
+					<td class="ui-widget-content">342</td>
+					<td class="ui-widget-content">165</td>
+					<td class="ui-widget-content">2</td>
+					<td class="ui-widget-content">331</td>
+				</tr>
+				<tr>
+
+					<td class="ui-widget-content">0</td>
+					<td class="ui-widget-content">1</td>
+					<td class="ui-widget-content">2</td>
+					<td class="ui-widget-content">3</td>
+				</tr>
+				<tr>
+					<td class="ui-widget-content">342</td>
+
+					<td class="ui-widget-content">165</td>
+					<td class="ui-widget-content">2</td>
+					<td class="ui-widget-content">331</td>
+				</tr>
+				<tr>
+					<td class="ui-widget-content">0</td>
+					<td class="ui-widget-content">1</td>
+
+					<td class="ui-widget-content">2</td>
+					<td class="ui-widget-content">3</td>
+				</tr>
+				<tr>
+					<td class="ui-widget-content">342</td>
+					<td class="ui-widget-content">165</td>
+					<td class="ui-widget-content">2</td>
+
+					<td class="ui-widget-content">331</td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="ui-grid-footer ui-widget-header ui-corner-bottom ui-helper-clearfix">
+			<div class="ui-grid-paging ui-helper-clearfix">
+				<a href="?results=1" class="ui-grid-paging-prev ui-state-default ui-corner-left"><span class="ui-icon ui-icon-triangle-1-w" title="previous set of results"></span></a>
+				<a href="?results=3" class="ui-grid-paging-next ui-state-default ui-corner-right"><span class="ui-icon ui-icon-triangle-1-e" title="next set of results"></span></a>
+
+			</div>
+			<div class="ui-grid-results">Showing results 10-20</div>
+		</div>
+	</div>
+</div>
+<div id="source">
+	<table summary="Showing results 10-20">
+		<caption>jQuery UI Grid Header</caption>
+		<thead>
+			<tr>
+				<th>First</th>
+				<th>Second</th>
+				<th>Third</th>
+				<th>Fourth</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>0</td>
+				<td>1</td>
+				<td>2</td>
+
+				<td>3</td>
+			</tr>
+			<tr>
+				<td>342</td>
+				<td>165</td>
+				<td>2</td>
+				<td>331</td>
+
+			</tr>
+			<tr>
+				<td>0</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+			</tr>
+
+			<tr>
+				<td>342</td>
+				<td>165</td>
+				<td>2</td>
+				<td>331</td>
+			</tr>
+			<tr>
+				<td>0</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+			</tr>
+			<tr>
+				<td>342</td>
+				<td>165</td>
+				<td>2</td>
+				<td>331</td>
+			</tr>
+			<tr>
+				<td>0</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+			</tr>
+			<tr>
+				<td>342</td>
+				<td>165</td>
+				<td>2</td>
+				<td>331</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+</body>
+</html>
