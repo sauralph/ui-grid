@@ -10,7 +10,7 @@
 	<!-- Date: 2010-11-20 -->
 	<link type="text/css" href="lib/css/smoothness/jquery-ui-1.8.6.custom.css" rel="stylesheet"/>	
 	<script type="text/javascript" src="lib/js/jquery-1.4.2.min.js"></script>
-	<script type="text/javascript" src="lib/js/jquery-ui-1.8.6.custom.min.js"></script>
+	<script type="text/javascript" src="lib/development-bundle/ui/jquery-ui-1.8.6.custom.js"></script>
 	<script type="text/javascript" src="jquery.ui.grid.js"></script>
 	
 	<!-- QUNIT -->
@@ -58,9 +58,94 @@
 			
 			ok($result.find("th span").length,"TH has an icon");
 			
-			ok($result.find("div.ui-grid-paging").length,"Has Paging Buttons")
+			ok($result.find("div.ui-grid-paging").length,"Has Paging Buttons");
 			
-		})
+			
+			//checking Buttons
+			var $buttonset = $result.find(".ui-grid-paging");
+			var $subject = $buttonset.find('a:eq(0)');
+			equal($subject.find("span:first").attr("class"),"ui-button-icon-primary ui-icon ui-icon-triangle-1-w","WEST TRIANGLE Icon Present");
+			equal($subject.find("span.ui-button-text").text(),"< Previous","Text Present");
+			
+			$subject = $buttonset.find('a:eq(1)');
+			equal($subject.find("span:first").attr("class"),"ui-button-icon-primary ui-icon ui-icon-plus","PLUS Icon Present");
+			equal($subject.find("span.ui-button-text").text(),"Add","Text Present");			
+
+			$subject = $buttonset.find('a:eq(2)');
+			equal($subject.find("span:first").attr("class"),"ui-button-icon-primary ui-icon ui-icon-trash","TRASH Icon Present");
+			equal($subject.find("span.ui-button-text").text(),"Remove","Text Present");
+			
+			$subject = $buttonset.find('a:eq(3)');
+			equal($subject.find("span:first").attr("class"),"ui-button-icon-primary ui-icon ui-icon-refresh","REFRESH Icon Present");
+			equal($subject.find("span.ui-button-text").text(),"Refresh","Text Present");
+			
+			$subject = $buttonset.find('a:eq(4)');
+			equal($subject.find("span:first").attr("class"),"ui-button-icon-primary ui-icon ui-icon-triangle-1-e","Icon Present");
+			equal($subject.find("span.ui-button-text").text(),"Next >","Text Present");
+			
+			ok($result.grid("getColumn",1).length,"Get Column Method, smoke test");
+			equal($result.find("table").grid("getColumn",1).length,$result.find("table tr:not(:has(th))").length,"Get Column Method, smoke test");
+			
+			
+			
+			//alert($.data("").toSource());
+			
+												
+		});
+		
+		test("Testing Functions",function(){
+			$expected = $("div#expected");
+			$result = $("div#result");
+			$source = $("div#source");
+			
+			$result.find("table").grid();
+			same($result.find("table").grid("getColumnValues",1),["0","342","0","342","0","342","0","342"],"Asserting Correct Values From Testing");
+			
+			same($result.find("table").grid("getColumnValues",1,function(input){return parseInt($(input).text());}),[0,342,0,342,0,342,0,342],"Asserting Correct Values From Testing, With Fn param");
+			
+			same($result.find("table").grid("getColumnValues",1,function(input){return parseFloat($(input).text())+1;}),[1,343,1,343,1,343,1,343],"Asserting Correct Values From Testing, With Fn param");
+			
+			
+			var complexParser = function(e,i){
+				return {row:i+1,value:parseInt($(e).text())}
+			};
+
+			same($result.find("table").grid("getColumnValues",1,complexParser),[{row:1,value:0},{row:2,value:342},{row:3,value:0},{row:4,value:342},{row:5,value:0},{row:6,value:342},{row:7,value:0},{row:8,value:342}],"Asserting Correct Values From Testing, With Complex Function param");
+			
+						
+			same($result.find("table").grid("getCellValue",1,1),"0","Asserting Correct getCellValue");
+			
+			$result.find("table").grid("setCellValue",1,1,"Blah/Blah");
+			
+			same($result.find("table").grid("getCellValue",1,1),"Blah/Blah","Asserting Correct setCellValue");
+			
+			same($result.find("table").grid("getRowCount"),8,"Asserting Correct rowCount");
+			
+			
+			//creating random test set
+			
+			var testSet=[];
+			var subject=0;
+			var max = $result.find("table").grid("getRowCount");
+			var otherColumn = $result.find("table").grid("getColumnValues",2);
+			for (var i = 1; i <=max; i++){
+				subject=Math.random();
+				testSet.push(subject);
+				$result.find("table").grid("setCellValue",i,1,subject);
+			};
+			
+			//testSet.reverse();
+			same($result.find("table").grid("getColumnValues",1,function(input){return parseFloat($(input).text())}),testSet,"Asserting Correct insertion of a test set");
+			
+			$result.find("table").grid("sort",1);
+			testSet.sort();
+			same($result.find("table").grid("getColumnValues",1,function(input){return parseFloat($(input).text())}),testSet,"The table is ordered Correctly");
+			
+			$result.find("table").grid("sort",1,"reverse");			
+			testSet.reverse();
+			same($result.find("table").grid("getColumnValues",1,function(input){return parseFloat($(input).text())}),testSet,"The table is ordered Correctly");					
+			
+		});
 		
 	</script>
 	
@@ -105,7 +190,9 @@
   <h2 id="qunit-userAgent"></h2>
   <ol id="qunit-tests">
   </ol>
-<div id="result">
+
+<div id="main">
+	<div id="result">
 	<table summary="Showing results 10-20">
 		<caption>jQuery UI Grid Header</caption>
 		<thead>
@@ -172,7 +259,7 @@
 	</table>
 </div>
 
-<div id="expected">
+	<div id="expected">
 	<div class="ui-grid ui-widget ui-widget-content ui-corner-all">
 		<div class="ui-grid-header ui-widget-header ui-corner-top">jQuery UI Grid Header</div>
 		<table class="ui-grid-content ui-widget-content">
@@ -254,7 +341,7 @@
 		</div>
 	</div>
 </div>
-<div id="source">
+	<div id="source">
 	<table summary="Showing results 10-20">
 		<caption>jQuery UI Grid Header</caption>
 		<thead>
@@ -319,6 +406,7 @@
 			</tr>
 		</tbody>
 	</table>
+</div>
 </div>
 </body>
 </html>
