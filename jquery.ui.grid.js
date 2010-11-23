@@ -12,6 +12,12 @@ $.widget( "ui.grid", {
 			"Refresh":{icons:{primary:"ui-icon-refresh"}},
 			"Next >":{text:false,icons:{primary:"ui-icon-triangle-1-e"}}
 		},
+		parse:function(data){
+			for (var i = data.data.length - 1; i >= 0; i--){
+				//data.data[i]
+			};
+		}
+		,
 		sort:{	
 			"default" : function(a,b){
 				return a.value - b.value;
@@ -21,14 +27,16 @@ $.widget( "ui.grid", {
 				return b.value-a.value;
 			}
 
-		}	
+		},
+		url:false,
+		ajaxOptions:{
+		  type: 'GET',
+		  dataType: "json"
+		}
 	},
 	_create:function(){
 		var self = this;
 		var table = this.element;
-		// if(table.attr("tag")!=="table"){
-		// 	table = table.find("table")
-		// }
 		
 		//build wrapper
 		table.wrap($("<div/>",{class:"ui-grid ui-widget ui-widget-content ui-corner-all"}));
@@ -64,7 +72,17 @@ $.widget( "ui.grid", {
 		
 		//styling TH
 		
-		table.find("th").addClass("ui-state-default").wrapInner($("<a/>",{href:"#"})).find("a").prepend($("<span>",{class:"ui-icon ui-icon-triangle-1-s"}));
+		table.find("th").each(function(i,e){
+			var $e = $(e);
+			//set abbr
+			var abbr = $e.text().toLowerCase();
+			abbr = abbr.split(" ").join("_");//John Resigs says this is faster....or was faster....or it works on all browsers...or something
+			$e.attr("abbr",abbr);
+			//if no id generate one
+			if(!$e.attr("id")){
+				$e.attr("id",abbr.concat("_",Math.ceil(Math.random()*10000)));
+			}
+		}).attr("scope","col").addClass("ui-state-default").wrapInner($("<a/>",{href:"#"})).find("a").prepend($("<span>",{class:"ui-icon ui-icon-triangle-1-s"}));
 		
 		//styling regular Cells
 		
@@ -152,6 +170,14 @@ $.widget( "ui.grid", {
 		return this.element.find("tr td:nth-child("+column+")"); 
 	},
 	
+	getRowByOrder:function(row){
+		return this.element.find("tr:eq("+row+")");
+	},
+	
+	getRowById:function(id){
+		return this.element.find("tr#"+id);
+	},
+	
 	getColumnValues:function(column,parser){
 		var set = this.getColumn(column);
 		
@@ -163,6 +189,24 @@ $.widget( "ui.grid", {
 		
 		return set.map(function(i,e){ return parser(e,i) }).get();
 		
+	},
+	
+	getRowValuesById:function(id,parser){
+		if(typeof parser ==="undefined"){
+			parser = function(input){
+				return $(input).text();
+			}
+		}
+		return this.getRowById(id).find("td").map(function(i,e){ return parser(e,i) }).get();
+	},
+	
+	getRowValuesByOrder:function(order,parser){
+		if(typeof parser ==="undefined"){
+			parser = function(input){
+				return $(input).text();
+			}
+		}
+		return this.getRowByOrder(order).find("td").map(function(i,e){ return parser(e,i) }).get();
 	},
 	
 	getCell:function(row,column){
@@ -185,7 +229,42 @@ $.widget( "ui.grid", {
 	getRowCount:function(){
 		return this.element.find("tr:not(:has(th))").length; 
 		
+	},
+	
+	refresh:function(){
+		//1st Get data
+		//2nd Parse data
+	},
+	
+	insertRow:function(row,id){
+		
+		if(!id){
+			id = "auto_generated_id_".concat(Math.ceil(Math.random()*1000000))
+		}
+		
+		var tr = $("<tr/>",{id:id});
+		
+		var columnNames = this.element.find("tr:has(th):first th").map(function(i,e){
+			return e.abbr;
+		}).get();
+		
+		var cell;
+		var column;
+		for (var i=0; i < columnNames.length; i++) {
+			column = columnNames[i];
+			if(row[column]){
+				cell = $("<td/>",{html:row[column],class:"ui-widget-content"});
+				tr.append(cell);
+			}
+		};
+		
+
+
+		this.element.find("tbody").append(tr)
+		
 	}
+	
+	
 	
 });
 //core functions	

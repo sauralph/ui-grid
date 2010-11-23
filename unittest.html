@@ -112,6 +112,12 @@
 
 			same($result.find("table").grid("getColumnValues",1,complexParser),[{row:1,value:0},{row:2,value:342},{row:3,value:0},{row:4,value:342},{row:5,value:0},{row:6,value:342},{row:7,value:0},{row:8,value:342}],"Asserting Correct Values From Testing, With Complex Function param");
 			
+			//testing Retrieving Functions for Rows
+			
+						same($result.find("table").grid("getRowValuesByOrder",1,function(input){return parseInt($(input).text());}),[0,1,2,3],"Asserting Correct Values From first Row, With Fn param");
+						
+						same($result.find("table").grid("getRowValuesByOrder",8,function(input){return parseInt($(input).text());}),[342,165,2,331],"Asserting Correct Values From eigth Row, With Fn param");
+			
 						
 			same($result.find("table").grid("getCellValue",1,1),"0","Asserting Correct getCellValue");
 			
@@ -120,6 +126,8 @@
 			same($result.find("table").grid("getCellValue",1,1),"Blah/Blah","Asserting Correct setCellValue");
 			
 			same($result.find("table").grid("getRowCount"),8,"Asserting Correct rowCount");
+			
+			
 			
 			
 			//creating random test set
@@ -143,9 +151,32 @@
 			
 			$result.find("table").grid("sort",1,"reverse");			
 			testSet.reverse();
-			same($result.find("table").grid("getColumnValues",1,function(input){return parseFloat($(input).text())}),testSet,"The table is ordered Correctly");					
+			same($result.find("table").grid("getColumnValues",1,function(input){return parseFloat($(input).text())}),testSet,"The table is ordered Correctly");
+			
+			//inserting a new row WITH id
+			$result.find("table").grid("insertRow",{second:102,first:100,third:103,fourth:104},"testingrow1");
+			same($result.find("table").grid("getRowCount"),9,"Row Inserted...");
+			
+			same($result.find("table").grid("getRowValuesByOrder",9,function(input){return parseInt($(input).text());}),[100,102,103,104],"Data in correct order");
+			same($result.find("table").grid("getRowValuesById","testingrow1",function(input){return parseInt($(input).text());}),[100,102,103,104],"Data in correct order retrieved by Id");
+			
+			//inserting row with no ID
+			$result.find("table").grid("insertRow",{second:102,first:100,third:103,fourth:104});
+			ok(/auto_generated_id_[\d]+/.test($result.find("table").grid("getRowByOrder",10).attr("id")),"Data has a generated ID");
+
+		});
+		
+		test("Testing Ajax",function(){
 			
 		});
+		
+		$(document).ready(function(){
+			$('div#main').hide();
+			$('#manual').grid();
+			$('#manual').grid("insertRow",{second:102,first:100,third:103,fourth:104});
+			
+		});
+
 		
 	</script>
 	
@@ -408,5 +439,150 @@
 	</table>
 </div>
 </div>
+
+<table id="manual" summary="Showing results 10-20">
+	<caption>jQuery UI Grid Header</caption>
+	<thead>
+		<tr>
+			<th>First</th>
+			<th>Second</th>
+			<th>Third</th>
+			<th>Fourth</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>0</td>
+			<td>1</td>
+			<td>2</td>
+
+			<td>3</td>
+		</tr>
+		<tr>
+			<td>342</td>
+			<td>165</td>
+			<td>2</td>
+			<td>331</td>
+
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>1</td>
+			<td>2</td>
+			<td>3</td>
+		</tr>
+
+		<tr>
+			<td>342</td>
+			<td>165</td>
+			<td>2</td>
+			<td>331</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>1</td>
+			<td>2</td>
+			<td>3</td>
+		</tr>
+		<tr>
+			<td>342</td>
+			<td>165</td>
+			<td>2</td>
+			<td>331</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>1</td>
+			<td>2</td>
+			<td>3</td>
+		</tr>
+		<tr>
+			<td>342</td>
+			<td>165</td>
+			<td>2</td>
+			<td>331</td>
+		</tr>
+	</tbody>
+</table>
+<TABLE border="1"
+          summary="This table summarizes travel expenses
+                   incurred during August trips to
+                   San Jose and Seattle">
+<CAPTION>
+  Travel Expense Report
+</CAPTION>
+<TR>
+  <TH></TH>
+  <TH id="a2" axis="expenses">Meals</TH>
+  <TH id="a3" axis="expenses">Hotels</TH>
+  <TH id="a4" axis="expenses">Transport</TH>
+  <TD>subtotals</TD>
+</TR>
+<TR>
+  <TH id="a6" axis="location">San Jose</TH>
+  <TH></TH>
+  <TH></TH>
+  <TH></TH>
+  <TD></TD>
+</TR>
+<TR>
+  <TD id="a7" axis="date">25-Aug-97</TD>
+  <TD headers="a6 a7 a2">37.74</TD>
+  <TD headers="a6 a7 a3">112.00</TD>
+  <TD headers="a6 a7 a4">45.00</TD>
+  <TD></TD>
+</TR>
+<TR>
+  <TD id="a8" axis="date">26-Aug-97</TD>
+  <TD headers="a6 a8 a2">27.28</TD>
+  <TD headers="a6 a8 a3">112.00</TD>
+  <TD headers="a6 a8 a4">45.00</TD>
+  <TD></TD>
+</TR>
+<TR>
+  <TD>subtotals</TD>
+  <TD>65.02</TD>
+  <TD>224.00</TD>
+  <TD>90.00</TD>
+  <TD>379.02</TD>
+</TR>
+<TR>
+  <TH id="a10" axis="location">Seattle</TH>
+  <TH></TH>
+  <TH></TH>
+  <TH></TH>
+  <TD></TD>
+</TR>
+<TR>
+  <TD id="a11" axis="date">27-Aug-97</TD>
+  <TD headers="a10 a11 a2">96.25</TD>
+  <TD headers="a10 a11 a3">109.00</TD>
+  <TD headers="a10 a11 a4">36.00</TD>
+  <TD></TD>
+</TR>
+<TR>
+  <TD id="a12" axis="date">28-Aug-97</TD>
+  <TD headers="a10 a12 a2">35.00</TD>
+  <TD headers="a10 a12 a3">109.00</TD>
+  <TD headers="a10 a12 a4">36.00</TD>
+  <TD></TD>
+</TR>
+<TR>
+  <TD>subtotals</TD>
+  <TD>131.25</TD>
+  <TD>218.00</TD>
+  <TD>72.00</TD>
+  <TD>421.25</TD>
+</TR>
+<TR>
+  <TH>Totals</TH>
+  <TD>196.27</TD>
+  <TD>442.00</TD>
+  <TD>162.00</TD>
+  <TD>800.27</TD>
+</TR>
+</TABLE>
+
+
 </body>
 </html>
