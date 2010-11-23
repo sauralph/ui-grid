@@ -88,6 +88,7 @@
 			
 			
 			
+			
 			//alert($.data("").toSource());
 			
 												
@@ -163,6 +164,10 @@
 			//inserting row with no ID
 			$result.find("table").grid("insertRow",{second:102,first:100,third:103,fourth:104});
 			ok(/auto_generated_id_[\d]+/.test($result.find("table").grid("getRowByOrder",10).attr("id")),"Data has a generated ID");
+			
+			
+			$result.find("table").grid("insertRow",{first:"", second:"1", third:"", fourth:""});
+			same($result.find("table").grid("getRowValuesByOrder",11,function(input){return parseInt($(input).text());}),[NaN,1,NaN,NaN],"Invalid data");
 
 		});
 		
@@ -174,6 +179,7 @@
 			$('div#main').hide();
 			$('#manual').grid();
 			$('#manual').grid("insertRow",{second:102,first:100,third:103,fourth:104});
+			$('table:last').grid();
 			
 		});
 

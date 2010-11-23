@@ -7,7 +7,43 @@ $.widget( "ui.grid", {
 		footerBar:true,
 		buttons:{
 			"< Previous":{text:false,icons:{primary:"ui-icon-triangle-1-w"}},
-			"Add":{icons:{primary:"ui-icon-plus"}},
+			"Add":{icons:{primary:"ui-icon-plus"},click:function(){
+				//if($.dialog()){
+					var grid = $(this).parents("div.ui-grid-footer").prev("table");
+					var columnNames = grid.find("tr:has(th):first th").map(function(i,e){
+						return {name:$(e).text(),abbr:e.abbr};
+					}).get();
+
+					var fields = $("<fieldset/>").appendTo("<form/>");
+					for (var i=0; i < columnNames.length; i++) {
+						$("<label>",{style:"display:block;",for:columnNames[i].abbr,text:columnNames[i].name}).appendTo(fields);
+						$("<input>",{style: "display:block;",type:"text",name:columnNames[i].abbr,class:"text ui-widget-content ui-corner-all"}).appendTo(fields);
+					};			
+					$("<div/>").append("<p/>",{text:"Add New Record"}).append(fields.parent("form")).appendTo("body").dialog({
+						title:"Add new Record",
+						buttons:{
+							"Add":function(){
+								var row = {};
+								
+								var out = $("input",this).map(function(i,e){return {value:$(e).val(),column:e.name};}).get();
+								
+								for (var i=0; i < out.length; i++) {
+									row[out[i].column]=out[i].value;
+								};
+								grid.grid("insertRow",row);
+								$("input",this).val("").first().focus();
+							},
+							"Close":function() {
+								$( this ).dialog( "close" );
+								$( this ).remove();
+							}
+						}
+						
+						
+					});
+					
+				//}
+			}},
 			"Remove":{icons:{primary:"ui-icon-trash"}},
 			"Refresh":{icons:{primary:"ui-icon-refresh"}},
 			"Next >":{text:false,icons:{primary:"ui-icon-triangle-1-e"}}
@@ -47,10 +83,14 @@ $.widget( "ui.grid", {
 		
 		//build footer
 		var buttons = $("<div/>",{class:"ui-grid-paging ui-helper-clearfix"});
-		
+		var node;
 		if(this.options.buttons){
 			for(name in this.options.buttons){
-				buttons.append($("<a/>",{text:name}).button(this.options.buttons[name]));
+				node = $("<a/>",{text:name}).button(this.options.buttons[name]);
+				buttons.append(node);
+				if(this.options.buttons[name].click){
+					node.click(this.options.buttons[name].click);
+				}
 			}
 			buttons.buttonset();	
 		}
@@ -254,8 +294,12 @@ $.widget( "ui.grid", {
 			column = columnNames[i];
 			if(row[column]){
 				cell = $("<td/>",{html:row[column],class:"ui-widget-content"});
-				tr.append(cell);
+
+			}else{
+				cell = $("<td/>",{html:"&nbsp;",class:"ui-widget-content"});
+				
 			}
+			tr.append(cell);
 		};
 		
 
