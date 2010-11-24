@@ -41,7 +41,7 @@ $.widget( "ui.grid", {
 				//}
 			}},
 			"Remove":{icons:{primary:"ui-icon-trash"}},
-			"Refresh":{icons:{primary:"ui-icon-refresh"}},
+			"Refresh":{icons:{primary:"ui-icon-refresh"},click:function(){$(this).parent("table").grid("refresh")}},
 			"Next >":{text:false,icons:{primary:"ui-icon-triangle-1-e"}}
 		},
 		parser:function(data,type){
@@ -257,7 +257,12 @@ $.widget( "ui.grid", {
 	},
 	
 	setCellValue:function(row,column,value){
-		return this.getCell(row,column).text(value);
+		if($.isPlainObject(row)){
+			throw new Error("Not Implemented");
+		}else{
+			this.getCell(row,column).text(value);		
+		}
+		
 	},
 	
 	getRowCount:function(){
@@ -343,17 +348,18 @@ $.widget( "ui.grid", {
 				tr.empty();
 			}
 		}
-		
-		
-		
+
 		var columnNames = this.element.find("tr:has(th):first th").map(function(i,e){
 			return e.abbr;
 		}).get();
 		
 		var cell;
 		var column;
+		var isArray = $.isArray(row);
+		
 		for (var i=0; i < columnNames.length; i++) {
-			column = columnNames[i];
+			
+			column = isArray?i:columnNames[i];
 			if(row[column]){
 				cell = $("<td/>",{html:row[column],class:"ui-widget-content"});
 

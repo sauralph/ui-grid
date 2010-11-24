@@ -1,162 +1,689 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
 
-
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html lang="en">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-	<title>index</title>
-	<meta name="generator" content="TextMate http://macromates.com/"/>
-	<meta name="author" content="Ezequiel Nuske"/>
-	<!-- Date: 2010-11-19 -->
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Unit Test for UI-grid</title>
+	<meta name="generator" content="TextMate http://macromates.com/">
+	<meta name="author" content="Ezequiel Nuske">
+	<!-- Date: 2010-11-20 -->
 	<link type="text/css" href="lib/css/smoothness/jquery-ui-1.8.6.custom.css" rel="stylesheet"/>	
-	<script type="text/javascript" src="lib/js/jquery-1.4.2.min.js"></script>
-	<script type="text/javascript" src="lib/js/jquery-ui-1.8.6.custom.min.js"></script>
-	<!-- secondary libs -->
-	<script src="lib/js/jquery.hoverIntent.minified.js" type="text/javascript" charset="utf-8"></script>
-	<script src="lib/js/bgiframe_2.1.1/jquery.bgiframe.min.js" type="text/javascript" charset="utf-8"></script>
-	<!--[if IE]><script src="../other_libs/excanvas_r3/excanvas.js" type="text/javascript" charset="utf-8"></script><![endif]-->
-	<script src="lib/js/jquery.bt.min.js" type="text/javascript" charset="utf-8"></script>	
-	<!-- cool easing stuff for animations -->
-	<script src="lib/js/jquery.easing.1.3.js" type="text/javascript" charset="utf-8"></script>
-	<!-- /easing -->
+	<!-- <script type="text/javascript" src="lib/js/jquery-1.4.2.min.js"></script> -->
 	
-	<style type="text/css" media="screen">
-		body{ font: 62.5% "Trebuchet MS", sans-serif; margin: 50px;}
-
-		table.ui-grid{
-			border-collapse:collapse;
-		}
-
-		table.ui-grid td,table.ui-grid th{
-			/*border-top:1px solid;*/
-			border:inherit;
-			padding:0.5em 1em 0.5em 1em;
-			text-align:center;
-		}
-		table.ui-grid th{
-		padding:0.5em 3em 0.25em 3em;
-		cursor:pointer;
-		font-weight:normal;
-		}
-		table.ui-grid th span.ui-icon{
-			float:right;
-			position:absolute;
-			
-		}
-		.ui-grid-caption{
-			padding:0.5em 1em 0.3em;
-			border-bottom:transparent ;
-			
-		}
-		
-		ul.column-menu {
-			padding:0em;
-			
-		}
-		
-		ul.column-menu li{
-			list-style-type:none;
-			text-align:center;
-			padding-top:0.5em;
-			padding-bottom:0.5em;
-			width:100%;
-			cursor:pointer;
-			
-		}
-		
-		ul.column-menu li:hover{
-			background-color:silver;
-			color:black;
-		}
-		table.ui-grid td{
-			border-top:1px dotted;
-		}
-	</style>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.4.4.js"></script>
+	
+	<script type="text/javascript" src="lib/development-bundle/ui/jquery-ui-1.8.6.custom.js"></script>
+	<script type="text/javascript" src="jquery.ui.grid.js"></script>
+	
+	<!-- QUNIT -->
+	<link rel="stylesheet" href="lib/qunit/qunit.css" type="text/css"/>
+	<script type="text/javascript" src="lib/qunit/qunit.js"></script>
 	<script type="text/javascript" charset="utf-8">
-		//styling test
-		$(document).ready(function(){
-			$('table')
-				.addClass("ui-widget ui-corner-all")
-				.find('caption')
-					.addClass("ui-widget-header ui-grid-caption")
-				.end()
-				.addClass("ui-widget-content ui-grid")
-				.find("tfoot>tr")
-					.addClass("ui-state-default")
-				.end()
-				.find("tr:has(th)")
-					.addClass("ui-state-default")
-					.find("th")
-					.click(function(){
-						$(this).siblings("th").removeClass("ui-state-active");
-						$(this).addClass("ui-state-active");
-					})
-					.hover(function(){
-						$(this).addClass("ui-state-hover");
-					},function(){
-						$(this).removeClass("ui-state-hover");
-					})
-					.end()
-				.end()
-				.find("tbody>tr")
-					.hover(function(){
-						$(this).addClass("ui-state-hover");
-					},function(){
-						$(this).removeClass("ui-state-hover");
-					})
-					
-					
-					
-/*.bt("<ul class='column-menu'><li>Sort AscendingSort AscendingSort AscendingSort AscendingSort Ascending</li><li>Sort Ascending</li><li>Sort Descending</li></ul>",{
-						trigger: 'click',
-					  padding: 20,
-					  width: 100,
-					  spikeLength: 20,
-					  spikeGirth: 40,
-					  cornerRadius: 10,
-					  fill: 'rgba(0, 0, 0, .65)',
-					  strokeWidth:2,
-					  strokeStyle: '#FFFFFF',
-					  cssStyles: {color: '#FFF', fontWeight: 'bold'},
-						padding:'2px',
-					  shadow: true,
-					  shadowOffsetX: 3,
-					  shadowOffsetY: 3,
-					  shadowBlur: 8,
-					  shadowColor: 'rgba(0,0,0,.9)',
-					  shadowOverlap: false,
-						positions:'bottom'
-					})*/
-						//.prepend($("<span>",{class:"ui-icon ui-icon-carat-1-s"}));
-				
+		test("Base Check",function(){
+			expect(8);
+			ok( Array.prototype.push, "Array.push()" );
+			ok( Function.prototype.apply, "Function.apply()" );
+			ok( document.getElementById, "getElementById" );
+			ok( document.getElementsByTagName, "getElementsByTagName" );
+			ok( RegExp, "RegExp" );
+			ok( jQuery, "jQuery" );
+			ok( $, "$" );
+			ok( jQuery.ui.grid,"Grid")
+			
+		});
 		
+		module("Appearance");
+		
+		test("Checking Skining",function(){
+			$expected = $("div#expected");
+			$result = $("div#result");
+			$source = $("div#source");
+			
+			equal($source.html(),$result.html(),"HTML match before Plugin");
+			
+			//applying Plugin
+			$result.find("table").grid();
+						
+			equal($result.find("table").siblings("div").length,$expected.find("table").siblings("div").length,"Header and Footer DIVs generated");
+			
+			equal($result.find("div div:first").text(),$expected.find("div div:first").text(),"Title matches expected");
+			
+			equal($result.find("div div:first").text(),$source.find("caption").text(),"Title matches source");
+			
+			equal($result.find("table").attr("class"),$expected.find("table").attr("class"),"Table Class matches");
+			
+			equal($result.find("th").attr("class"),$expected.find("th").attr("class"),"TH class matches");
+			
+			equal($result.find("td").attr("class"),$expected.find("td").attr("class"),"TD class matches");
+			
+			ok($result.find("th a").length,"TH has a link");
+			
+			ok($result.find("th span").length,"TH has an icon");
+			
+			ok($result.find("div.ui-grid-paging").length,"Has Paging Buttons");
+			
+			
+			//checking Buttons
+			var $buttonset = $result.find(".ui-grid-paging");
+			var $subject = $buttonset.find('a:eq(0)');
+			equal($subject.find("span:first").attr("class"),"ui-button-icon-primary ui-icon ui-icon-triangle-1-w","WEST TRIANGLE Icon Present");
+			equal($subject.find("span.ui-button-text").text(),"< Previous","Text Present");
+			
+			$subject = $buttonset.find('a:eq(1)');
+			equal($subject.find("span:first").attr("class"),"ui-button-icon-primary ui-icon ui-icon-plus","PLUS Icon Present");
+			equal($subject.find("span.ui-button-text").text(),"Add","Text Present");			
+
+			$subject = $buttonset.find('a:eq(2)');
+			equal($subject.find("span:first").attr("class"),"ui-button-icon-primary ui-icon ui-icon-trash","TRASH Icon Present");
+			equal($subject.find("span.ui-button-text").text(),"Remove","Text Present");
+			
+			$subject = $buttonset.find('a:eq(3)');
+			equal($subject.find("span:first").attr("class"),"ui-button-icon-primary ui-icon ui-icon-refresh","REFRESH Icon Present");
+			equal($subject.find("span.ui-button-text").text(),"Refresh","Text Present");
+			
+			$subject = $buttonset.find('a:eq(4)');
+			equal($subject.find("span:first").attr("class"),"ui-button-icon-primary ui-icon ui-icon-triangle-1-e","Icon Present");
+			equal($subject.find("span.ui-button-text").text(),"Next >","Text Present");
+			
+			ok($result.grid("getColumn",1).length,"Get Column Method, smoke test");
+			equal($result.find("table").grid("getColumn",1).length,$result.find("table tr:not(:has(th))").length,"Get Column Method, smoke test");
+												
+		});
+		
+		test("Checking Properties",function(){
+			var grid = $("div#result table").grid();
+			
+			same(grid.find("tr:first th[abbr]").map(function(i,e){return e.abbr}).get(),["first","second","third","fourth"],"Abbr Property setted");
+			
+		});
+		
+		module("Behaviour");
+		
+		test("Testing Sorting Functions",function(){
+			var grid = $("div#expected table").grid();
+			//creating random test set
+			
+			var testSet=[];
+			var subject=0;
+			var max = grid.grid("getRowCount");
+			var otherColumn = grid.grid("getColumnValues",2);
+			for (var i = 1; i <=max; i++){
+				subject=Math.random();
+				testSet.push(subject);
+				//inserting test set
+				grid.grid("setCellValue",i,1,subject);
+			};
+			
+			//testSet.reverse();
+			same(grid.grid("getColumnValues",1,function(input){return parseFloat($(input).text())}),testSet,"Asserting Correct insertion of a test set");
+			
+			grid.grid("sort",1);
+			testSet.sort();
+			same(grid.grid("getColumnValues",1,function(input){return parseFloat($(input).text())}),testSet,"The table is ordered Correctly");
+			
+			grid.grid("sort",1,"reverse");			
+			testSet.reverse();
+			same(grid.grid("getColumnValues",1,function(input){return parseFloat($(input).text())}),testSet,"The table is ordered Correctly");
+			
+			
+		});
+		
+		test("Testing Insert Data Functions",function(){
+			var grid = $("div#result table").grid();
+			
+			same(grid.grid("getCellValue",1,1),"0","Asserting Correct getCellValue");
+			
+			grid.grid("setCellValue",1,1,"Blah/Blah");
+			
+			same(grid.grid("getCellValue",1,1),"Blah/Blah","Asserting Correct setCellValue");
+			
+			same(grid.grid("getRowCount"),8,"Asserting Correct rowCount");
+			
+			
+			//inserting a new row WITH id
+			grid.grid("insertRow",{second:102,first:100,third:103,fourth:104},"testingrow1");
+			same(grid.grid("getRowCount"),9,"Row Inserted...");
+			
+			same(grid.grid("getRowValuesByOrder",9,function(input){return parseInt($(input).text());}),[100,102,103,104],"Data in correct order");
+			same(grid.grid("getRowValuesById","testingrow1",function(input){return parseInt($(input).text());}),[100,102,103,104],"Data in correct order retrieved by Id");
+			
+			//inserting row with no ID
+			grid.grid("insertRow",{second:102,first:100,third:103,fourth:104});
+			ok(/auto_generated_id_[\d]+/.test(grid.grid("getRowByOrder",10).attr("id")),"Data has a generated ID");
+			
+			
+			grid.grid("insertRow",{first:"", second:"1", third:"", fourth:""});
+			same(grid.grid("getRowValuesByOrder",11,function(input){return parseInt($(input).text());}),[NaN,1,NaN,NaN],"Invalid data");
+			
+			//Massive insert
+			var massive = [{second:102,first:100,third:103,fourth:104},{second:1021,first:1001,third:1031,fourth:1041},{second:1022,first:1002,third:1032,fourth:1042}];
+			grid.grid("insertRows",massive,"first");
+			
+					
+				same(grid.grid("getRowValuesByOrder",12,function(input){return parseInt($(input).text());}),[100,102,103,104],"Data by Order Row #1");
+						
+				same(grid.grid("getRowValuesByOrder",13,function(input){return parseInt($(input).text());}),[1001,1021,1031,1041],"Data by Order Row #2");
+						
+				same(grid.grid("getRowValuesByOrder",14,function(input){return parseInt($(input).text());}),[1002,1022,1032,1042],"Data by Order Row #3");
+				
+				same(grid.grid("getRowValuesById",100,function(input){return parseInt($(input).text());}),[100,102,103,104],"Data by ID Row #1");
+						
+				same(grid.grid("getRowValuesById",1001,function(input){return parseInt($(input).text());}),[1001,1021,1031,1041],"Data by ID Row #2");
+						
+				same(grid.grid("getRowValuesById",1002,function(input){return parseInt($(input).text());}),[1002,1022,1032,1042],"Data by ID Row #3");
+				
+												
+			grid.grid("insertRow",{second:9999,first:9999,third:9999,fourth:9999},1002)
+			
+			same(grid.grid("getRowValuesById",1002,function(input){return parseInt($(input).text());}),[9999,9999,9999,9999],"Replacing Cell By Id");
+			
+			//inserting data as an Array;
+			var rowAsArray = [-1,-1,-1,-1];
+			
+			grid.grid("insertRow",rowAsArray,"testRowAsArray");
+			same(grid.grid("getRowValuesById","testRowAsArray",function(input){return parseInt($(input).text());}),rowAsArray,"Inserting Row By Array");
+			
+			grid.grid("insertRow",rowAsArray);
+			var last = grid.grid("getRowCount");
+			same(grid.grid("getRowValuesByOrder",last,function(input){return parseInt($(input).text());}),rowAsArray,"Inserting Row By Array");
+			
+			
+		})
+		
+		test("Testing Functions Retrieve Values",function(){
+			var $expected = $("div#expected");
+			var $result = $("div#result");
+			var $source = $("div#source");
+			
+			$result.find("table").grid();
+			same($result.find("table").grid("getColumnValues",1),["0","342","0","342","0","342","0","342"],"Asserting Correct Values From Testing");
+			
+			same($result.find("table").grid("getColumnValues",1,function(input){return parseInt($(input).text());}),[0,342,0,342,0,342,0,342],"Asserting Correct Values From Testing, With Fn param");
+			
+			same($result.find("table").grid("getColumnValues",1,function(input){return parseFloat($(input).text())+1;}),[1,343,1,343,1,343,1,343],"Asserting Correct Values From Testing, With Fn param");
+			
+			
+			var complexParser = function(e,i){
+				return {row:i+1,value:parseInt($(e).text())}
+			};
+
+			same($result.find("table").grid("getColumnValues",1,complexParser),[{row:1,value:0},{row:2,value:342},{row:3,value:0},{row:4,value:342},{row:5,value:0},{row:6,value:342},{row:7,value:0},{row:8,value:342}],"Asserting Correct Values From Testing, With Complex Function param");
+			
+			//testing Retrieving Functions for Rows
+			
+						same($result.find("table").grid("getRowValuesByOrder",1,function(input){return parseInt($(input).text());}),[0,1,2,3],"Asserting Correct Values From first Row, With Fn param");
+						
+						same($result.find("table").grid("getRowValuesByOrder",8,function(input){return parseInt($(input).text());}),[342,165,2,331],"Asserting Correct Values From eigth Row, With Fn param");
+
+		});
+
+		test("Testing Parsers",function(){
+			
+			var grid = $("div#result table").grid();
+			//Trying Preferred JSON Format, veryVerbose and with every field set
+			var json = '{"idField":"first","totalRecords":1000,"totalPages":100,"showing":10,"page":1,"from":1,"to":10,"success":true,"message":"Displaying records 0 to 10 out of 1000","data":[{"first":"1","second":"2","third":"3","fourth":"4"},{"first":"2","second":"21","third":"31","fourth":"41"},{"first":"3","second":"22","third":"32","fourth":"42"},{"first":"4","second":"23","third":"33","fourth":"43"},{"first":"5","second":"24","third":"34","fourth":"44"},{"first":"6","second":"25","third":"35","fourth":"45"},{"first":"7","second":"26","third":"36","fourth":"46"},{"first":"8","second":"27","third":"37","fourth":"47"},{"first":"9","second":"28","third":"38","fourth":"48"},{"first":"10","second":"29","third":"39","fourth":"49"}]}';
+			
+			grid.grid({parser:function(data){return $.parseJSON( data )},url:"data.json"}).grid("deleteAllRows").grid("insertUnParsed",json);
+			
+				same(grid.grid("getRowCount"),10,"Rows Inserted...");
+				//what was inserted
+				var expectedInsertion = [{"first":"1","second":"2","third":"3","fourth":"4"},{"first":"2","second":"21","third":"31","fourth":"41"},{"first":"3","second":"22","third":"32","fourth":"42"},{"first":"4","second":"23","third":"33","fourth":"43"},{"first":"5","second":"24","third":"34","fourth":"44"},{"first":"6","second":"25","third":"35","fourth":"45"},{"first":"7","second":"26","third":"36","fourth":"46"},{"first":"8","second":"27","third":"37","fourth":"47"},{"first":"9","second":"28","third":"38","fourth":"48"},{"first":"10","second":"29","third":"39","fourth":"49"}];
+				//check if correctly inserted, both data and id
+				for (var i = expectedInsertion.length - 1; i >= 0; i--){
+					same(grid.grid("getRowValuesById",expectedInsertion[i].first,function(input){return $(input).text();}),[expectedInsertion[i].first,expectedInsertion[i].second,expectedInsertion[i].third,expectedInsertion[i].fourth],"Row "+i+" with id:"+expectedInsertion[i].first+" is correct with Preferred data and parser");
+				};
+				
+				//Next round...SAME Parser, minimal JSON
+				grid.grid("deleteAllRows");
+				
+				
+			
+			//trying Minimal JSON format
+			
+			
+			//grid.grid("option","parser",function).grid("refresh");
+						
+		});		
+
+		module("Ajax");
+
+		test("Testing Ajax",12,function(){
+			stop(1000);
+			$result.find("table").grid({url:"data.json",ajaxOptions:{complete:function(xhr,msg){
+				same(msg,"success","Ajax Request Completed Ok");
+				start();
+				same($result.find("table").grid("getRowCount"),10,"Rows Inserted...");
+				
+				//defining expected results
+				var expectedInsertion = [{"first":"1","second":"2","third":"3","fourth":"4"},{"first":"2","second":"21","third":"31","fourth":"41"},{"first":"3","second":"22","third":"32","fourth":"42"},{"first":"4","second":"23","third":"33","fourth":"43"},{"first":"5","second":"24","third":"34","fourth":"44"},{"first":"6","second":"25","third":"35","fourth":"45"},{"first":"7","second":"26","third":"36","fourth":"46"},{"first":"8","second":"27","third":"37","fourth":"47"},{"first":"9","second":"28","third":"38","fourth":"48"},{"first":"10","second":"29","third":"39","fourth":"49"}];
+				
+				//foreach expected result
+				for (var i = expectedInsertion.length - 1; i >= 0; i--){
+					
+					//check both if it has been inserted by ID and if data is correct
+					same($result.find("table").grid("getRowValuesById",expectedInsertion[i].first,function(input){return $(input).text();}),[expectedInsertion[i].first,expectedInsertion[i].second,expectedInsertion[i].third,expectedInsertion[i].fourth],"Row "+i+" with id:"+expectedInsertion[i].first+" is correct");
+					
+				};
+				
+			}}});
+			$result.find("table").grid("refresh");
+		});
+
+		$(document).ready(function(){
+			$('div#main').hide();
+			//$('#manual').grid();
+			$('#manual').grid({url:"data.json"}).grid("refresh");
+			$('table:last').grid();
+			
+		});
+
+		
+	</script>
+	
+	
+	<style type="text/css">
+		body { font-size: 62.5%; }
+
+		/* Grid
+		----------------------------------*/
+		.ui-grid { width: 500px; padding: .4em;  background-image: none; }
+		.ui-grid .ui-grid-content { width: 100%; border-collapse: collapse; }
+		.ui-grid table tbody td, .ui-grid .ui-grid-header, .ui-grid table thead a { padding: .4em;  }
+		.ui-grid table tbody td {  text-align: right; font-weight: normal;  }
+		.ui-grid .ui-grid-header, .ui-grid .ui-grid-footer { padding: .8em .4em; text-align: center; }
+		.ui-grid .ui-grid-footer { background-image: none; font-weight: normal; text-align: left; }
+		.ui-grid table thead a { display: block;  }
+		.ui-grid .ui-icon { float: right; }
+		.ui-grid .ui-grid-paging { float: right; }
+		.ui-grid .ui-grid-paging-prev { float: left; width: 16px; height: 16px; }
+		.ui-grid .ui-grid-paging-next { float: right; width: 16px; height: 16px; }
+		.ui-grid .ui-grid-results {  }
+	</style> 
+	
+	<script type="text/javascript">
+		$(function(){
+			$('div#expected tbody tr').hover(
+				function(){ $('td', this).addClass('ui-state-hover');},
+				function(){ $('td', this).removeClass('ui-state-hover');}
+			)
+			.toggle(
+				function(){ $('td', this).addClass('ui-state-highlight');},
+				function(){ $('td', this).removeClass('ui-state-highlight');}
+			);
 		});
 	</script>
 	
+	
 </head>
 <body>
-<table border="0" cellspacing="5" cellpadding="5" summary="This is a Sample Table">
-	<caption>Sample Table</caption>
-	<thead>
-		<tr><th>Column 1</th><th>Column 2</th><th>Column 3</th><th>Column 4</th><th>Column 5</th><th>Column 6</th></tr>
-	</thead>
-	<tfoot>
-		<tr><td>Total 1</td><td>Total 2</td><td>Total 3</td><td>Total 4</td><td>Total 5</td><td>Total 6</td></tr>
-	</tfoot>
-	<tbody>
-		<tr><td>Column 1</td><td>Column 2</td><td>Column 3</td><td>Column 4</td><td>Column 5</td><td>Column 6</td></tr>
-		<tr><td>Column 1</td><td>Column 2</td><td>Column 3</td><td>Column 4</td><td>Column 5</td><td>Column 6</td></tr>
-		<tr><td>Column 1</td><td>Column 2</td><td>Column 3</td><td>Column 4</td><td>Column 5</td><td>Column 6</td></tr>
-		<tr><td>Column 1</td><td>Column 2</td><td>Column 3</td><td>Column 4</td><td>Column 5</td><td>Column 6</td></tr>
-		<tr><td>Column 1</td><td>Column 2</td><td>Column 3</td><td>Column 4</td><td>Column 5</td><td>Column 6</td></tr>
-		<tr><td>Column 1</td><td>Column 2</td><td>Column 3</td><td>Column 4</td><td>Column 5</td><td>Column 6</td></tr>
-		<tr><td>Column 1</td><td>Column 2</td><td>Column 3</td><td>Column 4</td><td>Column 5</td><td>Column 6</td></tr>
-		<tr><td>Column 1</td><td>Column 2</td><td>Column 3</td><td>Column 4</td><td>Column 5</td><td>Column 6</td></tr>
-		<tr><td>Column 1</td><td>Column 2</td><td>Column 3</td><td>Column 4</td><td>Column 5</td><td>Column 6</td></tr>
-		<tr><td>Column 1</td><td>Column 2</td><td>Column 3</td><td>Column 4</td><td>Column 5</td><td>Column 6</td></tr>
-	</tbody>
+	<h1 id="qunit-header">QUnit Test for Ui.Grid</h1>
+  <h2 id="qunit-banner"></h2>
+  <h2 id="qunit-userAgent"></h2>
+  <ol id="qunit-tests">
+  </ol>
 
+<div id="main">
+	<div id="result">
+	<table summary="Showing results 10-20">
+		<caption>jQuery UI Grid Header</caption>
+		<thead>
+			<tr>
+				<th>First</th>
+				<th>Second</th>
+				<th>Third</th>
+				<th>Fourth</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>0</td>
+				<td>1</td>
+				<td>2</td>
+
+				<td>3</td>
+			</tr>
+			<tr>
+				<td>342</td>
+				<td>165</td>
+				<td>2</td>
+				<td>331</td>
+
+			</tr>
+			<tr>
+				<td>0</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+			</tr>
+
+			<tr>
+				<td>342</td>
+				<td>165</td>
+				<td>2</td>
+				<td>331</td>
+			</tr>
+			<tr>
+				<td>0</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+			</tr>
+			<tr>
+				<td>342</td>
+				<td>165</td>
+				<td>2</td>
+				<td>331</td>
+			</tr>
+			<tr>
+				<td>0</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+			</tr>
+			<tr>
+				<td>342</td>
+				<td>165</td>
+				<td>2</td>
+				<td>331</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+	<div id="expected">
+	<div class="ui-grid ui-widget ui-widget-content ui-corner-all">
+		<div class="ui-grid-header ui-widget-header ui-corner-top">jQuery UI Grid Header</div>
+		<table class="ui-grid-content ui-widget-content">
+			<thead>
+
+				<tr>
+					<th class="ui-state-default"><a href="?sortCol=1&asc"><span class="ui-icon ui-icon-triangle-1-s" title="sort ascending"></span> First</a></th>
+					<th class="ui-state-default"><a href="?sortCol=2&asc"><span class="ui-icon ui-icon-triangle-1-s" title="sort ascending"></span> Second</a></th>
+					<th class="ui-state-default"><a href="?sortCol=3&asc"><span class="ui-icon ui-icon-triangle-1-s" title="sort ascending"></span> Third</a></th>
+					<th class="ui-state-default"><a href="?sortCol=4&asc"><span class="ui-icon ui-icon-triangle-1-s" title="sort ascending"></span> Fourth</a></th>
+
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="ui-widget-content">0</td>
+					<td class="ui-widget-content">1</td>
+					<td class="ui-widget-content">2</td>
+
+					<td class="ui-widget-content">3</td>
+				</tr>
+				<tr>
+					<td class="ui-widget-content">342</td>
+					<td class="ui-widget-content">165</td>
+					<td class="ui-widget-content">2</td>
+					<td class="ui-widget-content">331</td>
+
+				</tr>
+				<tr>
+					<td class="ui-widget-content">0</td>
+					<td class="ui-widget-content">1</td>
+					<td class="ui-widget-content">2</td>
+					<td class="ui-widget-content">3</td>
+				</tr>
+
+				<tr>
+					<td class="ui-widget-content">342</td>
+					<td class="ui-widget-content">165</td>
+					<td class="ui-widget-content">2</td>
+					<td class="ui-widget-content">331</td>
+				</tr>
+				<tr>
+
+					<td class="ui-widget-content">0</td>
+					<td class="ui-widget-content">1</td>
+					<td class="ui-widget-content">2</td>
+					<td class="ui-widget-content">3</td>
+				</tr>
+				<tr>
+					<td class="ui-widget-content">342</td>
+
+					<td class="ui-widget-content">165</td>
+					<td class="ui-widget-content">2</td>
+					<td class="ui-widget-content">331</td>
+				</tr>
+				<tr>
+					<td class="ui-widget-content">0</td>
+					<td class="ui-widget-content">1</td>
+
+					<td class="ui-widget-content">2</td>
+					<td class="ui-widget-content">3</td>
+				</tr>
+				<tr>
+					<td class="ui-widget-content">342</td>
+					<td class="ui-widget-content">165</td>
+					<td class="ui-widget-content">2</td>
+
+					<td class="ui-widget-content">331</td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="ui-grid-footer ui-widget-header ui-corner-bottom ui-helper-clearfix">
+			<div class="ui-grid-paging ui-helper-clearfix">
+				<a href="?results=1" class="ui-grid-paging-prev ui-state-default ui-corner-left"><span class="ui-icon ui-icon-triangle-1-w" title="previous set of results"></span></a>
+				<a href="?results=3" class="ui-grid-paging-next ui-state-default ui-corner-right"><span class="ui-icon ui-icon-triangle-1-e" title="next set of results"></span></a>
+
+			</div>
+			<div class="ui-grid-results">Showing results 10-20</div>
+		</div>
+	</div>
+</div>
+	<div id="source">
+	<table summary="Showing results 10-20">
+		<caption>jQuery UI Grid Header</caption>
+		<thead>
+			<tr>
+				<th>First</th>
+				<th>Second</th>
+				<th>Third</th>
+				<th>Fourth</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>0</td>
+				<td>1</td>
+				<td>2</td>
+
+				<td>3</td>
+			</tr>
+			<tr>
+				<td>342</td>
+				<td>165</td>
+				<td>2</td>
+				<td>331</td>
+
+			</tr>
+			<tr>
+				<td>0</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+			</tr>
+
+			<tr>
+				<td>342</td>
+				<td>165</td>
+				<td>2</td>
+				<td>331</td>
+			</tr>
+			<tr>
+				<td>0</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+			</tr>
+			<tr>
+				<td>342</td>
+				<td>165</td>
+				<td>2</td>
+				<td>331</td>
+			</tr>
+			<tr>
+				<td>0</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+			</tr>
+			<tr>
+				<td>342</td>
+				<td>165</td>
+				<td>2</td>
+				<td>331</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+</div>
+
+<table id="manual" summary="Showing results 10-20">
+	<caption>jQuery UI Grid Header</caption>
+	<thead>
+		<tr>
+			<th>First</th>
+			<th>Second</th>
+			<th>Third</th>
+			<th>Fourth</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>0</td>
+			<td>1</td>
+			<td>2</td>
+
+			<td>3</td>
+		</tr>
+		<tr>
+			<td>342</td>
+			<td>165</td>
+			<td>2</td>
+			<td>331</td>
+
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>1</td>
+			<td>2</td>
+			<td>3</td>
+		</tr>
+
+		<tr>
+			<td>342</td>
+			<td>165</td>
+			<td>2</td>
+			<td>331</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>1</td>
+			<td>2</td>
+			<td>3</td>
+		</tr>
+		<tr>
+			<td>342</td>
+			<td>165</td>
+			<td>2</td>
+			<td>331</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>1</td>
+			<td>2</td>
+			<td>3</td>
+		</tr>
+		<tr>
+			<td>342</td>
+			<td>165</td>
+			<td>2</td>
+			<td>331</td>
+		</tr>
+	</tbody>
 </table>
+<TABLE border="1"
+          summary="This table summarizes travel expenses
+                   incurred during August trips to
+                   San Jose and Seattle">
+<CAPTION>
+  Travel Expense Report
+</CAPTION>
+<TR>
+  <TH></TH>
+  <TH id="a2" axis="expenses">Meals</TH>
+  <TH id="a3" axis="expenses">Hotels</TH>
+  <TH id="a4" axis="expenses">Transport</TH>
+  <TD>subtotals</TD>
+</TR>
+<TR>
+  <TH id="a6" axis="location">San Jose</TH>
+  <TH></TH>
+  <TH></TH>
+  <TH></TH>
+  <TD></TD>
+</TR>
+<TR>
+  <TD id="a7" axis="date">25-Aug-97</TD>
+  <TD headers="a6 a7 a2">37.74</TD>
+  <TD headers="a6 a7 a3">112.00</TD>
+  <TD headers="a6 a7 a4">45.00</TD>
+  <TD></TD>
+</TR>
+<TR>
+  <TD id="a8" axis="date">26-Aug-97</TD>
+  <TD headers="a6 a8 a2">27.28</TD>
+  <TD headers="a6 a8 a3">112.00</TD>
+  <TD headers="a6 a8 a4">45.00</TD>
+  <TD></TD>
+</TR>
+<TR>
+  <TD>subtotals</TD>
+  <TD>65.02</TD>
+  <TD>224.00</TD>
+  <TD>90.00</TD>
+  <TD>379.02</TD>
+</TR>
+<TR>
+  <TH id="a10" axis="location">Seattle</TH>
+  <TH></TH>
+  <TH></TH>
+  <TH></TH>
+  <TD></TD>
+</TR>
+<TR>
+  <TD id="a11" axis="date">27-Aug-97</TD>
+  <TD headers="a10 a11 a2">96.25</TD>
+  <TD headers="a10 a11 a3">109.00</TD>
+  <TD headers="a10 a11 a4">36.00</TD>
+  <TD></TD>
+</TR>
+<TR>
+  <TD id="a12" axis="date">28-Aug-97</TD>
+  <TD headers="a10 a12 a2">35.00</TD>
+  <TD headers="a10 a12 a3">109.00</TD>
+  <TD headers="a10 a12 a4">36.00</TD>
+  <TD></TD>
+</TR>
+<TR>
+  <TD>subtotals</TD>
+  <TD>131.25</TD>
+  <TD>218.00</TD>
+  <TD>72.00</TD>
+  <TD>421.25</TD>
+</TR>
+<TR>
+  <TH>Totals</TH>
+  <TD>196.27</TD>
+  <TD>442.00</TD>
+  <TD>162.00</TD>
+  <TD>800.27</TD>
+</TR>
+</TABLE>
+
+
 </body>
 </html>
