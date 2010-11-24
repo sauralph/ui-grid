@@ -24,9 +24,7 @@ $.widget( "ui.grid", {
 						buttons:{
 							"Add":function(){
 								var row = {};
-								
 								var out = $("input",this).map(function(i,e){return {value:$(e).val(),column:e.name};}).get();
-								
 								for (var i=0; i < out.length; i++) {
 									row[out[i].column]=out[i].value;
 								};
@@ -38,8 +36,6 @@ $.widget( "ui.grid", {
 								$( this ).remove();
 							}
 						}
-						
-						
 					});
 					
 				//}
@@ -48,10 +44,8 @@ $.widget( "ui.grid", {
 			"Refresh":{icons:{primary:"ui-icon-refresh"}},
 			"Next >":{text:false,icons:{primary:"ui-icon-triangle-1-e"}}
 		},
-		parse:function(data){
-			for (var i = data.data.length - 1; i >= 0; i--){
-				//data.data[i]
-			};
+		parser:function(data,type){
+			return data;
 		}
 		,
 		sort:{	
@@ -116,7 +110,7 @@ $.widget( "ui.grid", {
 			var $e = $(e);
 			//set abbr
 			var abbr = $e.text().toLowerCase();
-			abbr = abbr.split(" ").join("_");//John Resigs says this is faster....or was faster....or it works on all browsers...or something
+			abbr = abbr.split(" ").join("_");//John Resig says this is faster....or was faster....or it works on all browsers...or something
 			$e.attr("abbr",abbr);
 			//if no id generate one
 			if(!$e.attr("id")){
@@ -271,18 +265,86 @@ $.widget( "ui.grid", {
 		
 	},
 	
+	//REST functions...
+	
+	_getData:function(id){
+		var opts = this.options.ajaxOptions;
+		opts.url = this.options.url;
+		//the parser is injected as a dataFilter
+		opts.dataFilter = this.options.parser;
+		opts.context = this;
+		opts.success = function(data, textStatus, XMLHttpRequest){
+			this.insertRows(data.data,data.idField);
+		}
+		$.ajax(opts);
+	},
+	
+	_postData:function(){
+		
+	},
+	
+	_deleteData:function(id){
+		
+	},
+	
+	_putData:function(id){
+		
+	},
+	
+	insertUnParsed:function(unparsed,type){
+		if(typeof type === "undefined"){
+			type = this.options.ajaxOptions.dataType;
+		}
+		var data = this.options.parser(unparsed,type);
+		this.insertRows(data.data,data.idField);
+		
+	},
+	
+	insertRows:function(rows,id_reference){
+		for (var i=0; i < rows.length; i++) {
+			if(rows[i][id_reference]){
+				this.insertRow(rows[i],rows[i][id_reference]);
+			}else{
+				this.insertRow(rows[i],false);
+			}
+		}
+		
+	},
+	
 	refresh:function(){
+		this.deleteAllRows();
+		this._getData();
+		
 		//1st Get data
 		//2nd Parse data
 	},
 	
+	deleteRowById:function(id){
+		return getRowById(id);
+	},
+	deleteRowByOrder:function(order){
+		return getRowByOrder(order).empty();
+	},
+	deleteAllRows:function(){
+		this.element.find("tbody").empty();
+	},
 	insertRow:function(row,id){
-		
+		var tr;
 		if(!id){
-			id = "auto_generated_id_".concat(Math.ceil(Math.random()*1000000))
+			id = "auto_generated_id_".concat(Math.ceil(Math.random()*1000000));
+			tr = $("<tr/>",{id:id});
+		}else{
+			//check if the row exists
+			tr = $("tr#"+id);
+			if(!tr.length){
+				tr = $("<tr/>",{id:id});
+			}else{
+				//empty de row
+				tr.empty();
+			}
 		}
 		
-		var tr = $("<tr/>",{id:id});
+		
 		
 		var columnNames = this.element.find("tr:has(th):first th").map(function(i,e){
 			return e.abbr;

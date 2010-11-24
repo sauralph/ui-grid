@@ -9,7 +9,10 @@
 	<meta name="author" content="Ezequiel Nuske">
 	<!-- Date: 2010-11-20 -->
 	<link type="text/css" href="lib/css/smoothness/jquery-ui-1.8.6.custom.css" rel="stylesheet"/>	
-	<script type="text/javascript" src="lib/js/jquery-1.4.2.min.js"></script>
+	<!-- <script type="text/javascript" src="lib/js/jquery-1.4.2.min.js"></script> -->
+	
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.4.4.js"></script>
+	
 	<script type="text/javascript" src="lib/development-bundle/ui/jquery-ui-1.8.6.custom.js"></script>
 	<script type="text/javascript" src="jquery.ui.grid.js"></script>
 	
@@ -168,17 +171,77 @@
 			
 			$result.find("table").grid("insertRow",{first:"", second:"1", third:"", fourth:""});
 			same($result.find("table").grid("getRowValuesByOrder",11,function(input){return parseInt($(input).text());}),[NaN,1,NaN,NaN],"Invalid data");
+			
+			//Massive insert
+			var massive = [{second:102,first:100,third:103,fourth:104},{second:1021,first:1001,third:1031,fourth:1041},{second:1022,first:1002,third:1032,fourth:1042}];
+			$result.find("table").grid("insertRows",massive,"first");
+			
+					
+				same($result.find("table").grid("getRowValuesByOrder",12,function(input){return parseInt($(input).text());}),[100,102,103,104],"Invalid data");
+						
+				same($result.find("table").grid("getRowValuesByOrder",13,function(input){return parseInt($(input).text());}),[1001,1021,1031,1041],"Invalid data");
+						
+				same($result.find("table").grid("getRowValuesByOrder",14,function(input){return parseInt($(input).text());}),[1002,1022,1032,1042],"Invalid data");
+				
+				same($result.find("table").grid("getRowValuesById",100,function(input){return parseInt($(input).text());}),[100,102,103,104],"Invalid data");
+						
+				same($result.find("table").grid("getRowValuesById",1001,function(input){return parseInt($(input).text());}),[1001,1021,1031,1041],"Invalid data");
+						
+				same($result.find("table").grid("getRowValuesById",1002,function(input){return parseInt($(input).text());}),[1002,1022,1032,1042],"Invalid data");
+				
+												
+			//Todo: Insertion overlapping id, replaces cell
+			$result.find("table").grid("insertRow",{second:9999,first:9999,third:9999,fourth:9999},1002)
+			
+			same($result.find("table").grid("getRowValuesById",1002,function(input){return parseInt($(input).text());}),[9999,9999,9999,9999],"Invalid data");
+			
 
 		});
 		
-		test("Testing Ajax",function(){
+		test("Testing Ajax",12,function(){
+			stop(1000);
+			$result.find("table").grid({url:"data.json",ajaxOptions:{complete:function(xhr,msg){
+				same(msg,"success","Ajax Request Completed Ok");
+				start();
+				same($result.find("table").grid("getRowCount"),10,"Rows Inserted...");
+				var expectedInsertion = [{"first":"1","second":"2","third":"3","fourth":"4"},{"first":"2","second":"21","third":"31","fourth":"41"},{"first":"3","second":"22","third":"32","fourth":"42"},{"first":"4","second":"23","third":"33","fourth":"43"},{"first":"5","second":"24","third":"34","fourth":"44"},{"first":"6","second":"25","third":"35","fourth":"45"},{"first":"7","second":"26","third":"36","fourth":"46"},{"first":"8","second":"27","third":"37","fourth":"47"},{"first":"9","second":"28","third":"38","fourth":"48"},{"first":"10","second":"29","third":"39","fourth":"49"}];
+				for (var i = expectedInsertion.length - 1; i >= 0; i--){
+					same($result.find("table").grid("getRowValuesById",expectedInsertion[i].first,function(input){return $(input).text();}),[expectedInsertion[i].first,expectedInsertion[i].second,expectedInsertion[i].third,expectedInsertion[i].fourth],"Row "+i+" with id:"+expectedInsertion[i].first+" is correct");
+				};
+				
+			}}});
+			$result.find("table").grid("refresh");
+		});
+		
+		test("Testing Parsers",12,function(){
+			//Trying Preferred JSON Format
+			var json = '{"idField":"first","totalRecords":1000,"totalPages":100,"showing":10,"page":1,"from":1,"to":10,"success":true,"message":"Displaying records 0 to 10 out of 1000","data":[{"first":"1","second":"2","third":"3","fourth":"4"},{"first":"2","second":"21","third":"31","fourth":"41"},{"first":"3","second":"22","third":"32","fourth":"42"},{"first":"4","second":"23","third":"33","fourth":"43"},{"first":"5","second":"24","third":"34","fourth":"44"},{"first":"6","second":"25","third":"35","fourth":"45"},{"first":"7","second":"26","third":"36","fourth":"46"},{"first":"8","second":"27","third":"37","fourth":"47"},{"first":"9","second":"28","third":"38","fourth":"48"},{"first":"10","second":"29","third":"39","fourth":"49"}]}';
+			
+			$result.find("table").grid({parser:function(data){return $.parseJSON( data )},url:"data.json"}).grid("deleteAllRows").grid("insertUnParsed",json);
+			
+			
+			
+				same($result.find("table").grid("getRowCount"),10,"Rows Inserted...");
+				var expectedInsertion = [{"first":"1","second":"2","third":"3","fourth":"4"},{"first":"2","second":"21","third":"31","fourth":"41"},{"first":"3","second":"22","third":"32","fourth":"42"},{"first":"4","second":"23","third":"33","fourth":"43"},{"first":"5","second":"24","third":"34","fourth":"44"},{"first":"6","second":"25","third":"35","fourth":"45"},{"first":"7","second":"26","third":"36","fourth":"46"},{"first":"8","second":"27","third":"37","fourth":"47"},{"first":"9","second":"28","third":"38","fourth":"48"},{"first":"10","second":"29","third":"39","fourth":"49"}];
+				for (var i = expectedInsertion.length - 1; i >= 0; i--){
+					same($result.find("table").grid("getRowValuesById",expectedInsertion[i].first,function(input){return $(input).text();}),[expectedInsertion[i].first,expectedInsertion[i].second,expectedInsertion[i].third,expectedInsertion[i].fourth],"Row "+i+" with id:"+expectedInsertion[i].first+" is correct");
+				};
+				
+			$result.find("table").grid("refresh");
+			
+			//trying Minimal JSON format
+			
+			
+			//$result.find("table").grid("option","parser",function).grid("refresh");
+			
+			alert();	
 			
 		});
 		
 		$(document).ready(function(){
 			$('div#main').hide();
-			$('#manual').grid();
-			$('#manual').grid("insertRow",{second:102,first:100,third:103,fourth:104});
+			//$('#manual').grid();
+			$('#manual').grid({url:"data.json"}).grid("refresh");
 			$('table:last').grid();
 			
 		});
