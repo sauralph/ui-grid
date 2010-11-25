@@ -3,12 +3,10 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>index.html</string>
+	<string>jquery.ui.grid.js</string>
 	<key>documents</key>
 	<array>
 		<dict>
-			<key>expanded</key>
-			<true/>
 			<key>name</key>
 			<string>ui-grid</string>
 			<key>regexFolderFilter</key>
@@ -18,36 +16,66 @@
 		</dict>
 	</array>
 	<key>fileHierarchyDrawerWidth</key>
-	<integer>196</integer>
+	<integer>368</integer>
 	<key>metaData</key>
 	<dict>
+		<key>data.json</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>718</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>columnSelection</key>
+			<false/>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>718</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+		</dict>
 		<key>index.html</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>15</integer>
+				<integer>62</integer>
 				<key>line</key>
-				<integer>101</integer>
+				<integer>130</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>70</integer>
+			<integer>494</integer>
 		</dict>
 		<key>jquery.ui.grid.js</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>42</integer>
 				<key>line</key>
-				<integer>0</integer>
+				<integer>216</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>0</integer>
+			<integer>192</integer>
 		</dict>
 		<key>lib/css/smoothness/jquery-ui-1.8.6.custom.css</key>
 		<dict>
@@ -79,47 +107,123 @@
 				<integer>69</integer>
 			</dict>
 		</dict>
-		<key>lib/index.html</key>
+		<key>lib/development-bundle/GPL-LICENSE.txt</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
 				<integer>0</integer>
 				<key>line</key>
-				<integer>5</integer>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>lib/development-bundle/MIT-LICENSE.txt</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>lib/development-bundle/ui/jquery-ui-1.8.6.custom.js</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>21</integer>
+				<key>line</key>
+				<integer>9771</integer>
 			</dict>
 			<key>columnSelection</key>
 			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>44</integer>
+			<integer>11396</integer>
 			<key>selectFrom</key>
 			<dict>
 				<key>column</key>
-				<integer>81</integer>
+				<integer>13</integer>
 				<key>line</key>
-				<integer>7</integer>
+				<integer>9771</integer>
 			</dict>
 			<key>selectTo</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>21</integer>
 				<key>line</key>
-				<integer>5</integer>
+				<integer>9771</integer>
 			</dict>
+		</dict>
+		<key>lib/development-bundle/ui/jquery.ui.autocomplete.js</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>56</integer>
+				<key>line</key>
+				<integer>427</integer>
+			</dict>
+			<key>columnSelection</key>
+			<false/>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>452</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>27</integer>
+				<key>line</key>
+				<integer>427</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>56</integer>
+				<key>line</key>
+				<integer>427</integer>
+			</dict>
+		</dict>
+		<key>lib/development-bundle/ui/jquery.ui.datepicker.js</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>34</integer>
+				<key>line</key>
+				<integer>130</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>1669</integer>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
-		<string>jquery.ui.grid.js</string>
 		<string>index.html</string>
-		<string>lib/index.html</string>
-		<string>lib/css/smoothness/jquery-ui-1.8.6.custom.css</string>
+		<string>lib/development-bundle/ui/jquery-ui-1.8.6.custom.js</string>
+		<string>lib/development-bundle/ui/jquery.ui.autocomplete.js</string>
+		<string>lib/development-bundle/ui/jquery.ui.datepicker.js</string>
+		<string>jquery.ui.grid.js</string>
+		<string>data.json</string>
+		<string>lib/development-bundle/MIT-LICENSE.txt</string>
+		<string>lib/development-bundle/GPL-LICENSE.txt</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{199, 70}, {1234, 808}}</string>
+	<string>{{229, 66}, {1062, 808}}</string>
 </dict>
 </plist>

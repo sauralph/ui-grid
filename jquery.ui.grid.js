@@ -45,9 +45,35 @@ $.widget( "ui.grid", {
 			"Next >":{text:false,icons:{primary:"ui-icon-triangle-1-e"}}
 		},
 		parser:function(data,type){
-			return data;
-		}
-		,
+			switch(type){
+				case "html":
+				case "xml":					
+					return $(data).children().children().map(function(i,e){
+						var row = {};
+						if(e.children.length>0){
+							for (var i = e.children.length - 1; i >= 0; i--){
+								var n = e.children[i];
+								row[n.tagName] = n.textContent;
+							};
+						}
+						for (var i = 0; i < e.attributes.length; i++) {
+						  var attrib = e.attributes[i];
+							row[attrib.name]=attrib.value;
+						}
+						return row;
+					}).get();
+				case "json":
+					return $.parseJSON(data);
+				case "text":
+					if($.csv){
+						return jQuery.csv2json()(data);
+					}else{
+						throw new Error("CSV parser plug-in not found. Please download form: http://code.google.com/p/js-tables/wiki/CSV");
+					}
+				default:
+					throw new Error("Unknown data!");
+			}
+		},
 		sort:{	
 			"default" : function(a,b){
 				return a.value - b.value;
@@ -201,7 +227,7 @@ $.widget( "ui.grid", {
 		if(isNaN(column)||column===0){
 			column=1;
 		}
-		return this.element.find("tr td:nth-child("+column+")"); 
+		return this.element.find("tr:not(:has(th)) td:nth-child("+column+")"); 
 	},
 	
 	getRowByOrder:function(row){
@@ -279,7 +305,8 @@ $.widget( "ui.grid", {
 		opts.dataFilter = this.options.parser;
 		opts.context = this;
 		opts.success = function(data, textStatus, XMLHttpRequest){
-			this.insertRows(data.data,data.idField);
+			console.dir(data);
+			this.insertRows(data,data.idField);
 		}
 		$.ajax(opts);
 	},
@@ -301,11 +328,20 @@ $.widget( "ui.grid", {
 			type = this.options.ajaxOptions.dataType;
 		}
 		var data = this.options.parser(unparsed,type);
-		this.insertRows(data.data,data.idField);
+
+		
+		this.insertRows(data,data.idField);
 		
 	},
 	
-	insertRows:function(rows,id_reference){
+	insertRows:function(data,id_reference){
+		var rows;
+		if(data.data){
+			rows=data.data;
+		}else if($.isPlainObject(data)||$.isArray(data)){
+			rows=data;
+		}
+		
 		for (var i=0; i < rows.length; i++) {
 			if(rows[i][id_reference]){
 				this.insertRow(rows[i],rows[i][id_reference]);

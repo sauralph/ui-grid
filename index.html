@@ -9,12 +9,14 @@
 	<meta name="author" content="Ezequiel Nuske">
 	<!-- Date: 2010-11-20 -->
 	<link type="text/css" href="lib/css/smoothness/jquery-ui-1.8.6.custom.css" rel="stylesheet"/>	
-	<!-- <script type="text/javascript" src="lib/js/jquery-1.4.2.min.js"></script> -->
+	<script type="text/javascript" src="lib/js/jquery-1.4.2.min.js"></script>
 	
-	<script type="text/javascript" src="http://code.jquery.com/jquery-1.4.4.js"></script>
+	<!-- <script type="text/javascript" src="http://code.jquery.com/jquery-1.4.4.js"></script> -->
 	
 	<script type="text/javascript" src="lib/development-bundle/ui/jquery-ui-1.8.6.custom.js"></script>
 	<script type="text/javascript" src="jquery.ui.grid.js"></script>
+	<script type="text/javascript" src="lib/js/jquery.csv.js">	</script>
+
 	
 	<!-- QUNIT -->
 	<link rel="stylesheet" href="lib/qunit/qunit.css" type="text/css"/>
@@ -126,6 +128,15 @@
 			testSet.reverse();
 			same(grid.grid("getColumnValues",1,function(input){return parseFloat($(input).text())}),testSet,"The table is ordered Correctly");
 			
+			//testing Custom Sort Function
+			var sort = 	grid.grid("option","sort");
+			sort.random = function(a,b){return Math.round(Math.random())};
+			grid.grid("option","sort", sort);
+			grid.grid("sort",1,"reverse");	
+			
+			same(grid.grid("getColumnValues",1,function(input){return parseFloat($(input).text())}),testSet,"The table is ordered Correctly");
+			
+			
 			
 		});
 		
@@ -224,11 +235,13 @@
 			//Trying Preferred JSON Format, veryVerbose and with every field set
 			var json = '{"idField":"first","totalRecords":1000,"totalPages":100,"showing":10,"page":1,"from":1,"to":10,"success":true,"message":"Displaying records 0 to 10 out of 1000","data":[{"first":"1","second":"2","third":"3","fourth":"4"},{"first":"2","second":"21","third":"31","fourth":"41"},{"first":"3","second":"22","third":"32","fourth":"42"},{"first":"4","second":"23","third":"33","fourth":"43"},{"first":"5","second":"24","third":"34","fourth":"44"},{"first":"6","second":"25","third":"35","fourth":"45"},{"first":"7","second":"26","third":"36","fourth":"46"},{"first":"8","second":"27","third":"37","fourth":"47"},{"first":"9","second":"28","third":"38","fourth":"48"},{"first":"10","second":"29","third":"39","fourth":"49"}]}';
 			
-			grid.grid({parser:function(data){return $.parseJSON( data )},url:"data.json"}).grid("deleteAllRows").grid("insertUnParsed",json);
+			grid.grid({parser:function(data){return $.parseJSON( data )}}).grid("deleteAllRows").grid("insertUnParsed",json);
 			
-				same(grid.grid("getRowCount"),10,"Rows Inserted...");
+				same(grid.grid("getRowCount"),10,"10 Rows Inserted...");
+				
 				//what was inserted
 				var expectedInsertion = [{"first":"1","second":"2","third":"3","fourth":"4"},{"first":"2","second":"21","third":"31","fourth":"41"},{"first":"3","second":"22","third":"32","fourth":"42"},{"first":"4","second":"23","third":"33","fourth":"43"},{"first":"5","second":"24","third":"34","fourth":"44"},{"first":"6","second":"25","third":"35","fourth":"45"},{"first":"7","second":"26","third":"36","fourth":"46"},{"first":"8","second":"27","third":"37","fourth":"47"},{"first":"9","second":"28","third":"38","fourth":"48"},{"first":"10","second":"29","third":"39","fourth":"49"}];
+				
 				//check if correctly inserted, both data and id
 				for (var i = expectedInsertion.length - 1; i >= 0; i--){
 					same(grid.grid("getRowValuesById",expectedInsertion[i].first,function(input){return $(input).text();}),[expectedInsertion[i].first,expectedInsertion[i].second,expectedInsertion[i].third,expectedInsertion[i].fourth],"Row "+i+" with id:"+expectedInsertion[i].first+" is correct with Preferred data and parser");
@@ -237,9 +250,34 @@
 				//Next round...SAME Parser, minimal JSON
 				grid.grid("deleteAllRows");
 				
-				
 			
-			//trying Minimal JSON format
+			//trying Minimal JSON format with unstructured data
+			json = "[[1,2,3,4],[5,6,7,8,9],[10,null,12,13],[14,15],[18,19,20,21],[22,23,24,25],[26,27,28,29],[30,31,32,33],[34,36,37,38]]";
+			
+			var expected = [[1,2,3,4],[5,6,7,8],[10,NaN,12,13],[14,15,NaN,NaN],[18,19,20,21],[22,23,24,25],[26,27,28,29],[30,31,32,33],[34,36,37,38]]
+			
+			grid.grid("insertUnParsed",json);
+			
+			ok(grid.grid("getRowCount")===9,"9 Rows Inserted");
+			//check if correctly inserted, both data and id
+			for (var i = expected.length-1; i >= 0; i--){
+				same(grid.grid("getRowValuesByOrder",i+1,function(input){return parseInt($(input).text());}),[expected[i][0],expected[i][1],expected[i][2],expected[i][3]],"Row "+i+" with id:"+expectedInsertion[i].first+" is correct with Preferred data and only Minimal JSON (only Array)");
+			};
+			
+			//Next round...SAME Parser, minimal JSON
+			grid.grid("deleteAllRows");			
+			
+			//trying Minimal JSON Objects Array format
+			json = '[{"first":"1","second":"2","third":"3","fourth":"4"},{"first":"2","second":"21","third":"31","fourth":"41"},{"first":"3","second":"22","third":"32","fourth":"42"},{"first":"4","second":"23","third":"33","fourth":"43"},{"first":"5","second":"24","third":"34","fourth":"44"},{"first":"6","second":"25","third":"35","fourth":"45"},{"first":"7","second":"26","third":"36","fourth":"46"},{"first":"8","second":"27","third":"37","fourth":"47"},{"first":"9","second":"28","third":"38","fourth":"48"},{"first":"10","second":"29","third":"39","fourth":"49"}]';
+			
+			grid.grid("insertUnParsed",json);
+			
+			ok(grid.grid("getRowCount")===10,"10 Rows Inserted");
+			//check if correctly inserted, both data and id
+			for (var i = expectedInsertion.length - 1; i >= 0; i--){
+				same(grid.grid("getRowValuesByOrder",i+1,function(input){return $(input).text();}),[expectedInsertion[i].first,expectedInsertion[i].second,expectedInsertion[i].third,expectedInsertion[i].fourth],"Row # "+i+" is correct with Preferred parser and Only JSON objects Array");
+			};
+			
 			
 			
 			//grid.grid("option","parser",function).grid("refresh");
@@ -248,12 +286,15 @@
 
 		module("Ajax");
 
-		test("Testing Ajax",12,function(){
+		test("Testing Ajax JSON",12,function(){
 			stop(1000);
-			$result.find("table").grid({url:"data.json",ajaxOptions:{complete:function(xhr,msg){
+			
+			var grid = $result.find("table");
+			
+			grid.grid({url:"data.json",ajaxOptions:{complete:function(xhr,msg){
 				same(msg,"success","Ajax Request Completed Ok");
 				start();
-				same($result.find("table").grid("getRowCount"),10,"Rows Inserted...");
+				same(grid.grid("getRowCount"),10,"Rows Inserted...");
 				
 				//defining expected results
 				var expectedInsertion = [{"first":"1","second":"2","third":"3","fourth":"4"},{"first":"2","second":"21","third":"31","fourth":"41"},{"first":"3","second":"22","third":"32","fourth":"42"},{"first":"4","second":"23","third":"33","fourth":"43"},{"first":"5","second":"24","third":"34","fourth":"44"},{"first":"6","second":"25","third":"35","fourth":"45"},{"first":"7","second":"26","third":"36","fourth":"46"},{"first":"8","second":"27","third":"37","fourth":"47"},{"first":"9","second":"28","third":"38","fourth":"48"},{"first":"10","second":"29","third":"39","fourth":"49"}];
@@ -262,13 +303,63 @@
 				for (var i = expectedInsertion.length - 1; i >= 0; i--){
 					
 					//check both if it has been inserted by ID and if data is correct
-					same($result.find("table").grid("getRowValuesById",expectedInsertion[i].first,function(input){return $(input).text();}),[expectedInsertion[i].first,expectedInsertion[i].second,expectedInsertion[i].third,expectedInsertion[i].fourth],"Row "+i+" with id:"+expectedInsertion[i].first+" is correct");
+					same(grid.grid("getRowValuesById",expectedInsertion[i].first,function(input){return $(input).text();}),[expectedInsertion[i].first,expectedInsertion[i].second,expectedInsertion[i].third,expectedInsertion[i].fourth],"Row "+i+" with id:"+expectedInsertion[i].first+" is correct");
 					
 				};
 				
 			}}});
-			$result.find("table").grid("refresh");
+			grid.grid("refresh");
 		});
+
+		test("Testing Ajax CSV",7,function(){
+			stop(1000);
+			
+			var grid = $result.find("table");
+			
+			grid.grid({url:"data.csv",ajaxOptions:{dataType:"text",complete:function(xhr,msg){
+				same(msg,"success","Ajax CSV Request Completed Ok");
+				start();
+				same(grid.grid("getRowCount"),5,"Rows Inserted...");
+				
+				//defining expected results
+				var expectedInsertion = [[1,2,3,4],[6,7,8,9],[11,12,13,14],[16,17,18,19],[21,22,23,24]];
+				
+				//foreach expected result
+				for (var i = expectedInsertion.length - 1; i >= 0; i--){
+					//check both if it has been inserted by ID and if data is correct
+					same(grid.grid("getRowValuesByOrder",i+1,function(input){return parseInt($(input).text());}),expectedInsertion[i],"Row "+i+" is correct");
+					
+				};
+				
+			}}});
+			grid.grid("refresh");
+		});
+		
+		test("Testing Ajax XML",6,function(){
+			stop(1000);
+			
+			var grid = $result.find("table");
+			
+			grid.grid({url:"data.xml",ajaxOptions:{dataType:"xml",complete:function(xhr,msg){
+				same(msg,"success","Ajax XML Request Completed Ok");
+				start();
+				same(grid.grid("getRowCount"),6,"Rows Inserted...");
+				
+				//defining expected results
+				var expectedInsertion = [[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,16],[17,18,19,NaN],[-1,-2,-3,-4]];
+				
+				//foreach expected result
+				for (var i = expectedInsertion.length - 1; i >= 0; i--){
+					//check both if it has been inserted by ID and if data is correct
+					same(grid.grid("getRowValuesByOrder",i+1,function(input){return parseInt($(input).text());}),expectedInsertion[i],"Row "+i+" is correct");
+					
+				};
+				
+			}}});
+			grid.grid("refresh");
+		});
+		
+		
 
 		$(document).ready(function(){
 			$('div#main').hide();
