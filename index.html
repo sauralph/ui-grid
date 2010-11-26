@@ -100,18 +100,53 @@
 			
 		});
 		
+		module("Internal");
+		
+		test("Checking Index",function(){
+			var grid = $("div#result table").grid();
+			
+			var columns = [1,2,3,4];
+			
+			var rows = [1,2,3,4,5,6,7,8];
+			
+			//transversing Columns
+			
+			for (var i=0; i < columns.length; i++) {
+				var column = columns[i];
+				same(grid.grid("getColumnValues",column,function(e){return $(e).data("columnOrdinal")}),[column,column,column,column,column,column,column,column],"getColumnValues: Column "+column+" with correct columnOrdinal index");
+				same(grid.grid("getColumnValues",column,function(e){return $(e).data("rowOrdinal")}),rows,"getColumnValues: Column "+column+" with correct rowOrdinal index");
+								
+			};
+			
+			//transversing Rows
+			
+			for (var i=0; i < rows.length; i++) {
+				var row = rows[i];
+				same(grid.grid("getRowValuesByOrder",row,function(e){return $(e).data("rowOrdinal")}),[row,row,row,row],"getRowValuesByOrder: Column "+column+" with correct rowOrdinal index");
+				same(grid.grid("getRowValuesByOrder",row,function(e){return $(e).data("columnOrdinal")}),columns,"getRowValuesByOrder: Column "+column+" with correct columnOrdinal index");
+			};
+			
+			
+			
+			
+			
+		});
+		
 		module("Behaviour");
+		
+	
 		
 		test("Testing Dirty Cells",function(){
 			var grid = $("div#result table").grid();
+			
+			var original = grid.grid("getColumnValues",1);
 			
 			same(grid.grid("getCell",1,1).text(),"0","Get Cell works correctly");
 			var cell = grid.grid("getCell",1,1);
 			grid.grid("setCellValue",cell,1)
 			
-			same(grid.grid("getCell",1,1).text(),"0","getCell:setCellValue took cell reference as a parameter");
+			same(grid.grid("getCell",1,1).text(),"1","getCell:setCellValue took cell reference as a parameter");
 			
-			var original = grid.grid("getColumnValues",1);
 			var testSet = [];
 			for (var i = 1; i <=8; i++){
 				subject=Math.random();
@@ -122,6 +157,12 @@
 			
 						
 			same(grid.grid("getColumnValues",1),testSet,"getColumnValues: Values For Column 1 Have been overwritten");
+			
+			same(grid.grid("getColumnValues",1,function(e){
+				return $(e).data("originalValue");
+			}),original,"getColumnValues: originalValue For Column 1 is present in each cell meta-data");
+			
+			
 			
 			for  (i = 1; i <=10; i++){
 				ok(grid.grid("discardCellChanges",i,1),"discardCellChanges: Cell changes for cell "+i+",1 discarded");
@@ -322,7 +363,7 @@
 		test("Testing Ajax JSON",12,function(){
 			stop(1000);
 			
-			var grid = $result.find("table");
+			var grid = $("div#result").find("table");
 			
 			grid.grid({url:"data.json",ajaxOptions:{complete:function(xhr,msg){
 				same(msg,"success","Ajax Request Completed Ok");
@@ -347,7 +388,7 @@
 		test("Testing Ajax CSV",7,function(){
 			stop(1000);
 			
-			var grid = $result.find("table");
+			var grid = $("div#result").find("table");
 			
 			grid.grid({url:"data.csv",ajaxOptions:{dataType:"text",complete:function(xhr,msg){
 				same(msg,"success","Ajax CSV Request Completed Ok");
@@ -371,7 +412,7 @@
 		test("Testing Ajax XML",8,function(){
 			stop(1000);
 			
-			var grid = $result.find("table");
+			var grid = $("div#result").find("table");
 			
 			grid.grid({url:"data.xml",ajaxOptions:{dataType:"xml",complete:function(xhr,msg){
 				same(msg,"success","Ajax XML Request Completed Ok");

@@ -145,6 +145,10 @@ $.widget( "ui.grid", {
 			}
 		}).attr("scope","col").addClass("ui-state-default").wrapInner($("<a/>",{"href":"#"})).find("a").prepend($("<span>",{"class":"ui-icon ui-icon-triangle-1-s"}));
 		
+		//start structural Index
+		this._index();
+		
+		
 		//styling regular Cells
 		
 		table.find("td").addClass("ui-widget-content");
@@ -220,7 +224,9 @@ $.widget( "ui.grid", {
 		for (var i = reference.length - 1; i >= 0; i--){
 			reference[i].row.prependTo(tbody);
 		};
-		
+		//all done?
+		//reindex...
+		this._index();
 		
 	},
 	
@@ -319,23 +325,26 @@ $.widget( "ui.grid", {
 	*/
 	setCellValue:function(row,column,value){
 		var cell;
-		if(row.filter&&row.find){
-			cell = row.filter("td").find(":first");
+		if(row.filter&&row.find&&row[0].tagName==="TD"){
+			//cell = row.filter("td").find(":first");
+			cell=row;
 			value=column;
 		}else{
 			cell = this.getCell(row,column);
 			
 		}
-			if(!cell.data("originalValue")){
-				//No original Value? First time I guess...
-				cell.data("originalValue",cell.text());
-			}
-			//ok now I got an originalValue....
-			//The cell is Dirty if the original value is diferent from the incomming
-			cell.data("dirty",value!=cell.data("originalValue"));
-			//finally, set value
-			cell.data("currentValue",value);
-			cell.text(value);
+		var originalValue = cell.data("originalValue");
+		if(typeof originalValue==="undefined"){
+			//No original Value? First time I guess...
+			cell.data("originalValue",cell.text());
+			originalValue=cell.text();
+		}
+		//ok now I got an originalValue....
+		//The cell is Dirty if the original value is diferent from the incomming
+		cell.data("dirty",value!=originalValue);
+		//finally, set value
+		cell.data("currentValue",value);
+		cell.text(value);
 			
 					
 
@@ -348,7 +357,7 @@ $.widget( "ui.grid", {
 		if(typeof value === "undefined"){
 			//this.setCellValue(cell,cell.text());
 		}else{
-			this.setCellValue(cell,cell.data("originalValue"));
+			this.setCellValue(cell,value);
 		}
 	}
 	,
@@ -425,12 +434,15 @@ $.widget( "ui.grid", {
 	deleteRowById:function(id){
 		return getRowById(id);
 	},
+	
 	deleteRowByOrder:function(order){
 		return getRowByOrder(order).empty();
 	},
+	
 	deleteAllRows:function(){
 		this.element.find("tbody").empty();
 	},
+	
 	insertRow:function(row,id){
 		var tr;
 		if(!id){
@@ -447,9 +459,7 @@ $.widget( "ui.grid", {
 			}
 		}
 
-		var columnNames = this.element.find("tr:has(th):first th").map(function(i,e){
-			return e.abbr;
-		}).get();
+		var columnNames = this.getColumnNames();
 		
 		var cell;
 		var column;
@@ -472,7 +482,26 @@ $.widget( "ui.grid", {
 
 		this.element.find("tbody").append(tr)
 		
+	},
+	
+	_index:function(){
+		var columnNames = this.getColumnNames();
+		for (var i=1; i <= columnNames.length; i++) {
+			this.getColumn(i).data("columnOrdinal",i);
+		};
+		var rowCount = this.getRowCount();
+		for (var i=1; i <= rowCount; i++) {
+			this.getRowByOrder(i).children("td").andSelf().data("rowOrdinal",i);
+		};
+		
+	},
+	
+	getColumnNames:function(){
+		return this.element.find("tr:has(th):first th").map(function(i,e){
+			return e.abbr;
+		}).get();
 	}
+	
 	
 	
 	
