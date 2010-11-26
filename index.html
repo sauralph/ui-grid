@@ -102,6 +102,39 @@
 		
 		module("Behaviour");
 		
+		test("Testing Dirty Cells",function(){
+			var grid = $("div#result table").grid();
+			
+			same(grid.grid("getCell",1,1).text(),"0","Get Cell works correctly");
+			var cell = grid.grid("getCell",1,1);
+			grid.grid("setCellValue",cell,1)
+			
+			same(grid.grid("getCell",1,1).text(),"0","getCell:setCellValue took cell reference as a parameter");
+			
+			var original = grid.grid("getColumnValues",1);
+			var testSet = [];
+			for (var i = 1; i <=8; i++){
+				subject=Math.random();
+				testSet.push(subject);
+				//inserting test set
+				grid.grid("setCellValue",i,1,subject);
+			};
+			
+						
+			same(grid.grid("getColumnValues",1),testSet,"getColumnValues: Values For Column 1 Have been overwritten");
+			
+			for  (i = 1; i <=10; i++){
+				ok(grid.grid("discardCellChanges",i,1),"discardCellChanges: Cell changes for cell "+i+",1 discarded");
+			};
+			
+			same(grid.grid("getColumnValues",1),original,"getColumnValues:Values For Column 1 Have been restored");
+			
+			
+			
+			
+			
+		})
+		
 		test("Testing Sorting Functions",function(){
 			var grid = $("div#expected table").grid();
 			//creating random test set
@@ -335,7 +368,7 @@
 			grid.grid("refresh");
 		});
 		
-		test("Testing Ajax XML",6,function(){
+		test("Testing Ajax XML",8,function(){
 			stop(1000);
 			
 			var grid = $result.find("table");

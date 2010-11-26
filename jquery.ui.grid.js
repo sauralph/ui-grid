@@ -16,8 +16,8 @@ $.widget( "ui.grid", {
 
 					var fields = $("<fieldset/>").appendTo("<form/>");
 					for (var i=0; i < columnNames.length; i++) {
-						$("<label>",{style:"display:block;",for:columnNames[i].abbr,text:columnNames[i].name}).appendTo(fields);
-						$("<input>",{style: "display:block;",type:"text",name:columnNames[i].abbr,class:"text ui-widget-content ui-corner-all"}).appendTo(fields);
+						$("<label>",{"style":"display:block;","for":columnNames[i].abbr,"text":columnNames[i].name}).appendTo(fields);
+						$("<input>",{"style": "display:block;","type":"text","name":columnNames[i].abbr,"class":"text ui-widget-content ui-corner-all"}).appendTo(fields);
 					};			
 					$("<div/>").append("<p/>",{text:"Add New Record"}).append(fields.parent("form")).appendTo("body").dialog({
 						title:"Add new Record",
@@ -41,7 +41,7 @@ $.widget( "ui.grid", {
 				//}
 			}},
 			"Remove":{icons:{primary:"ui-icon-trash"}},
-			"Refresh":{icons:{primary:"ui-icon-refresh"},click:function(){$(this).parent("table").grid("refresh")}},
+			"Refresh":{icons:{primary:"ui-icon-refresh"},click:function(){$(this).parents("div.ui-grid-footer").prev("table").grid("refresh")}},
 			"Next >":{text:false,icons:{primary:"ui-icon-triangle-1-e"}}
 		},
 		parser:function(data,type){
@@ -50,10 +50,11 @@ $.widget( "ui.grid", {
 				case "xml":					
 					return $(data).children().children().map(function(i,e){
 						var row = {};
-						if(e.children.length>0){
-							for (var i = e.children.length - 1; i >= 0; i--){
-								var n = e.children[i];
-								row[n.tagName] = n.textContent;
+						var childs = $(e).children();
+						if(childs.length>0){
+							for (var i = childs.length - 1; i >= 0; i--){
+								var n = childs.eq(i);
+								row[n.get(0).tagName] = n.text();
 							};
 						}
 						for (var i = 0; i < e.attributes.length; i++) {
@@ -95,18 +96,18 @@ $.widget( "ui.grid", {
 		var table = this.element;
 		
 		//build wrapper
-		table.wrap($("<div/>",{class:"ui-grid ui-widget ui-widget-content ui-corner-all"}));
+		table.wrap($("<div/>",{"class":"ui-grid ui-widget ui-widget-content ui-corner-all"}));
 		
 		//build title
 		
-		table.before($("<div/>",{text:table.find("caption").hide().text(),class:"ui-grid-header ui-widget-header ui-corner-top"}));
+		table.before($("<div/>",{"text":table.find("caption").hide().text(),"class":"ui-grid-header ui-widget-header ui-corner-top"}));
 		
 		//build footer
-		var buttons = $("<div/>",{class:"ui-grid-paging ui-helper-clearfix"});
+		var buttons = $("<div/>",{"class":"ui-grid-paging ui-helper-clearfix"});
 		var node;
 		if(this.options.buttons){
 			for(name in this.options.buttons){
-				node = $("<a/>",{text:name}).button(this.options.buttons[name]);
+				node = $("<a/>",{"text":name}).button(this.options.buttons[name]);
 				buttons.append(node);
 				if(this.options.buttons[name].click){
 					node.click(this.options.buttons[name].click);
@@ -118,10 +119,10 @@ $.widget( "ui.grid", {
 
 		
 		
-		var results = $("<div/>",{class:"ui-grid-results"});
+		var results = $("<div/>",{"class":"ui-grid-results"});
 		var footer  = $("<div/>",{
-			text:table.attr("summary"),
-			class:"ui-grid-footer ui-widget-header ui-corner-bottom ui-helper-clearfix"
+			"text":table.attr("summary"),
+			"class":"ui-grid-footer ui-widget-header ui-corner-bottom ui-helper-clearfix"
 			}).wrapInner(results).prepend(buttons);
 			
 		table.after(footer);
@@ -142,7 +143,7 @@ $.widget( "ui.grid", {
 			if(!$e.attr("id")){
 				$e.attr("id",abbr.concat("_",Math.ceil(Math.random()*10000)));
 			}
-		}).attr("scope","col").addClass("ui-state-default").wrapInner($("<a/>",{href:"#"})).find("a").prepend($("<span>",{class:"ui-icon ui-icon-triangle-1-s"}));
+		}).attr("scope","col").addClass("ui-state-default").wrapInner($("<a/>",{"href":"#"})).find("a").prepend($("<span>",{"class":"ui-icon ui-icon-triangle-1-s"}));
 		
 		//styling regular Cells
 		
@@ -162,10 +163,10 @@ $.widget( "ui.grid", {
 		
 		//building menu
 		this.menu = $( "<ul/>" );
-		this.menu.append($("<li/>",{style:"cursor:pointer;"}).append($("<a/>",{data:{command:function(c){self.sort(c,"default")}},text:"Order Ascending"})));
-		this.menu.append($("<li/>",{style:"cursor:pointer;"}).append($("<a/>",{data:{command:function(c){self.sort(c,"reverse")}},text:"Order Descending"})));
-		this.menu.append($("<li/>",{style:"cursor:pointer;"}).append($("<a/>",{data:{command:function(c){alert(c+" Placeholder!")}},text:"Filter by this field..."})));
-		this.menu.append($("<li/>",{style:"cursor:pointer;"}).append($("<a/>",{data:{command:function(c){alert(c+" Placeholder!")}},text:"Group by this field..."})));
+		this.menu.append($("<li/>",{"style":"cursor:pointer;"}).append($("<a/>",{"data":{"command":function(c){self.sort(c,"default")}},"text":"Order Ascending"})));
+		this.menu.append($("<li/>",{"style":"cursor:pointer;"}).append($("<a/>",{"data":{"command":function(c){self.sort(c,"reverse")}},"text":"Order Descending"})));
+		this.menu.append($("<li/>",{"style":"cursor:pointer;"}).append($("<a/>",{"data":{"command":function(c){alert(c+" Placeholder!")}},"text":"Filter by this field..."})));
+		this.menu.append($("<li/>",{"style":"cursor:pointer;"}).append($("<a/>",{"data":{"command":function(c){alert(c+" Placeholder!")}},"text":"Group by this field..."})));
 		
 		this.menu.menu({
 			selected:function(event,data){
@@ -205,7 +206,7 @@ $.widget( "ui.grid", {
 				break;
 			case "undefined":
 			default:
-				fn = this.options.sort.default;
+				fn = this.options.sort["default"];
 		}
 		
 		var reference = this.getColumnValues(column,function(e,i){
@@ -241,13 +242,13 @@ $.widget( "ui.grid", {
 	getColumnValues:function(column,parser){
 		var set = this.getColumn(column);
 		
-		if(typeof parser ==="undefined"){
-			parser = function(input,index){
-				return $(input).text();
-			}
-		}
-		
-		return set.map(function(i,e){ return parser(e,i) }).get();
+		// if(typeof parser ==="undefined"){
+		// 	parser = function(input,index){
+		// 		return $(input).text();
+		// 	}
+		// }
+		var self = this;
+		return set.map(function(i,e){ return self.getCellValue(e,parser) }).get();
 		
 	},
 	
@@ -270,26 +271,87 @@ $.widget( "ui.grid", {
 	},
 	
 	getCell:function(row,column){
+		
 		return this.element.find("tr:nth-child("+row+") td:nth-child("+column+")"); 
 	},
-	
+	/*
+	getCellValue(row,column[,parser])
+	getCellValue(cell[,parser])
+	*/
 	getCellValue:function(row,column,parser){
-		if(typeof parser ==="undefined"){
-			parser = function(input){
-				return input;
-			}
-		}
-		return parser(this.getCell(row,column).text()); 
-	},
-	
-	setCellValue:function(row,column,value){
-		if($.isPlainObject(row)){
-			throw new Error("Not Implemented");
+	//	if(typeof parser ==="undefined"){
+		//	parser = function(input){
+		//		return input;
+		//	}
+		//}
+		var cell;
+		if(row.tagName==="TD"||(row.is&&row.is("td"))){
+			cell = $(row);
+			parser = column || parser;
 		}else{
-			this.getCell(row,column).text(value);		
+			cell=this.getCell(row,column);
+			//throw new Error("Invalid Row/Cell Parameter");
 		}
 		
+		var fallback = cell.data("currentValue") || cell.text();
+		var parsed;
+		if(parser){
+			parsed = parser(cell,cell.parent("tr").index("tr")-1);
+		}
+		if(!parsed&&parsed!=0){
+			return fallback;
+		}else{
+			return parsed;
+		}
+		//return parsed||fallback;
+
+		
 	},
+	/*
+	setCellValue(row,column,value)
+	setCellValue(rowId,column,value)
+	setCellValue(cellReference,value)
+	row (integer) : The Row Order number 1-Base Index (Row 0 is the header)
+	rowId (string) : The Row Id
+	cellReference (JQuery) :   Object indicating the td cell
+	column(integer) : The Column Order Number 1-Base Index
+	value(?): the value to be inserted in the cell 
+	*/
+	setCellValue:function(row,column,value){
+		var cell;
+		if(row.filter&&row.find){
+			cell = row.filter("td").find(":first");
+			value=column;
+		}else{
+			cell = this.getCell(row,column);
+			
+		}
+			if(!cell.data("originalValue")){
+				//No original Value? First time I guess...
+				cell.data("originalValue",cell.text());
+			}
+			//ok now I got an originalValue....
+			//The cell is Dirty if the original value is diferent from the incomming
+			cell.data("dirty",value!=cell.data("originalValue"));
+			//finally, set value
+			cell.data("currentValue",value);
+			cell.text(value);
+			
+					
+
+		
+	},
+	
+	discardCellChanges:function(row,column){
+		var cell = this.getCell(row,column);
+		var value = cell.data("originalValue");
+		if(typeof value === "undefined"){
+			//this.setCellValue(cell,cell.text());
+		}else{
+			this.setCellValue(cell,cell.data("originalValue"));
+		}
+	}
+	,
 	
 	getRowCount:function(){
 		return this.element.find("tr:not(:has(th))").length; 
@@ -305,7 +367,7 @@ $.widget( "ui.grid", {
 		opts.dataFilter = this.options.parser;
 		opts.context = this;
 		opts.success = function(data, textStatus, XMLHttpRequest){
-			console.dir(data);
+			//console.dir(data);
 			this.insertRows(data,data.idField);
 		}
 		$.ajax(opts);
@@ -378,7 +440,7 @@ $.widget( "ui.grid", {
 			//check if the row exists
 			tr = $("tr#"+id);
 			if(!tr.length){
-				tr = $("<tr/>",{id:id});
+				tr = $("<tr/>",{"id":id});
 			}else{
 				//empty de row
 				tr.empty();
@@ -397,10 +459,10 @@ $.widget( "ui.grid", {
 			
 			column = isArray?i:columnNames[i];
 			if(row[column]){
-				cell = $("<td/>",{html:row[column],class:"ui-widget-content"});
+				cell = $("<td/>",{"html":row[column],"class":"ui-widget-content"});
 
 			}else{
-				cell = $("<td/>",{html:"&nbsp;",class:"ui-widget-content"});
+				cell = $("<td/>",{"html":"&nbsp;","class":"ui-widget-content"});
 				
 			}
 			tr.append(cell);
