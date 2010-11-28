@@ -42,7 +42,8 @@ $.widget( "ui.grid", {
 			}},
 			"Remove":{icons:{primary:"ui-icon-trash"}},
 			"Refresh":{icons:{primary:"ui-icon-refresh"},click:function(){$(this).parents("div.ui-grid-footer").prev("table").grid("refresh")}},
-			"Next >":{text:false,icons:{primary:"ui-icon-triangle-1-e"}}
+			"Next >":{text:false,icons:{primary:"ui-icon-triangle-1-e"}},
+			"&#931;":{icons:false}
 		},
 		parser:function(data,type){
 			switch(type){
@@ -89,6 +90,45 @@ $.widget( "ui.grid", {
 		ajaxOptions:{
 		  type: 'GET',
 		  dataType: "json"
+		},
+		editors:{
+			"default":function(cellData){
+				return $("<input/>",{"value":cellData.value,"type":"text"}).blur(function(){
+					cellData.gridInstance.setCellValue(cellData.rowOrdinal,cellData.columnOrdinal,$(this).val());
+					$(this).remove();
+				}).keydown(function(event){
+					var keyCode = $.ui.keyCode;
+					var grid = cellData.gridInstance;
+					var row = cellData.rowOrdinal;
+					var col = cellData.columnOrdinal;
+					switch ( event.keyCode ) {
+						case keyCode.RIGHT:
+							grid.editCell(row,col+1);
+							$(this).remove();							
+							break;
+						case keyCode.DOWN:
+							grid.editCell(row+1,col);
+							$(this).remove();							
+							break;
+						case keyCode.LEFT:
+							grid.editCell(row,col-1);
+							$(this).remove();							
+							break;
+						case keyCode.UP:
+							grid.editCell(row-1,col);
+							$(this).remove();							
+							break;
+						case keyCode.ENTER:
+							this.blur();
+							break;
+						case keyCode.ESCAPE:
+							//do not commit
+							$(this).unbind("blur");
+							//exit mode
+							$(this).remove();
+					}
+				});
+			}
 		}
 	},
 	_create:function(){
@@ -107,7 +147,7 @@ $.widget( "ui.grid", {
 		var node;
 		if(this.options.buttons){
 			for(name in this.options.buttons){
-				node = $("<a/>",{"text":name}).button(this.options.buttons[name]);
+				node = $("<a/>",{"html":name}).button(this.options.buttons[name]);
 				buttons.append(node);
 				if(this.options.buttons[name].click){
 					node.click(this.options.buttons[name].click);
@@ -155,15 +195,41 @@ $.widget( "ui.grid", {
 		
 		//registring behaviour for rows
 		
-		table.find("tr:has(td)")
-		.hover(
-			function(){ $('td', this).addClass('ui-state-hover');},
-			function(){ $('td', this).removeClass('ui-state-hover');}
-		)
-		.toggle(
-			function(){ $('td', this).addClass('ui-state-highlight');},
-			function(){ $('td', this).removeClass('ui-state-highlight');}
-		);
+		// table.find("tr:has(td)")
+		// .hover(
+		// 	function(){ $('td', this).addClass('ui-state-hover');},
+		// 	function(){ $('td', this).removeClass('ui-state-hover');}
+		// )
+		// .toggle(
+		// 	function(){ $('td', this).addClass('ui-state-highlight');},
+		// 	function(){ $('td', this).removeClass('ui-state-highlight');}
+		// );
+		
+		$("td",table).live("mouseenter",function(){
+			$(this).addClass('ui-state-hover');
+		});
+		
+		$("td",table).live("mouseout",function(){
+			$(this).removeClass('ui-state-hover');
+		});
+		
+		$("td",table).live("click",function(){
+			$(this).parents("table").find("td").removeClass('ui-state-highlight');
+			$(this).toggleClass('ui-state-highlight');
+		});
+		
+		$("td",table).live("click",function(){
+			$(this).parents("table").find("td").removeClass('ui-state-highlight');
+			$(this).toggleClass('ui-state-highlight');
+		});
+		
+		$("td",table).live("dblclick",function(){
+			var col = $(this).data("columnOrdinal");
+			var row = $(this).data("rowOrdinal");
+			self.editCell(row,col);
+		});
+		
+		
 		
 		//building menu
 		this.menu = $( "<ul/>" );
@@ -198,6 +264,7 @@ $.widget( "ui.grid", {
 			self.menu.slideToggle("fast");
 			self.menu.data("column",$(this).parent("th").index()+1);
 		});	
+		
 	},
 	sort:function(column,fn){
 		switch(typeof fn){
@@ -210,7 +277,11 @@ $.widget( "ui.grid", {
 				break;
 			case "undefined":
 			default:
-				fn = this.options.sort["default"];
+				if($.isFunction(fn)){
+					break;
+				}else{
+					fn = this.options.sort["default"];
+				}
 		}
 		
 		var reference = this.getColumnValues(column,function(e,i){
@@ -277,8 +348,12 @@ $.widget( "ui.grid", {
 	},
 	
 	getCell:function(row,column){
+		if(row.tagName==="TD"||(row.is&&row.is("td"))){
+			return row;
+		}else{
+			return this.element.find("tr:nth-child("+row+") td:nth-child("+column+")"); 
+		}
 		
-		return this.element.find("tr:nth-child("+row+") td:nth-child("+column+")"); 
 	},
 	/*
 	getCellValue(row,column[,parser])
@@ -304,6 +379,12 @@ $.widget( "ui.grid", {
 		if(parser){
 			parsed = parser(cell,cell.parent("tr").index("tr")-1);
 		}
+		
+		var originalValue = cell.data("originalValue");
+		if(typeof originalValue ==="undefined"){
+			cell.data("originalValue",fallback);
+		}
+		
 		if(!parsed&&parsed!=0){
 			return fallback;
 		}else{
@@ -311,6 +392,17 @@ $.widget( "ui.grid", {
 		}
 		//return parsed||fallback;
 
+		
+	},
+	
+	getCellData:function(row,column){
+		var cell = this.getCell(row,column);
+		var data = {};
+		data["value"] = this.getCellValue(cell);
+		data["originalValue"] = cell.data("originalValue");
+		data["columnOrdinal"] =  cell.data("columnOrdinal");
+		data["rowOrdinal"] = cell.data("rowOrdinal");
+		return data;
 		
 	},
 	/*
@@ -378,6 +470,7 @@ $.widget( "ui.grid", {
 		opts.success = function(data, textStatus, XMLHttpRequest){
 			//console.dir(data);
 			this.insertRows(data,data.idField);
+			this._index();
 		}
 		$.ajax(opts);
 	},
@@ -426,6 +519,7 @@ $.widget( "ui.grid", {
 	refresh:function(){
 		this.deleteAllRows();
 		this._getData();
+		
 		
 		//1st Get data
 		//2nd Parse data
@@ -500,8 +594,53 @@ $.widget( "ui.grid", {
 		return this.element.find("tr:has(th):first th").map(function(i,e){
 			return e.abbr;
 		}).get();
-	}
+	},
 	
+	editCell:function(row,column){
+		var data = this.getCellData(row,column);
+		data["gridInstance"]=this;
+		var position = this.getCell(row,column).position();
+		var width = this.getCell(row,column).innerWidth();
+		var height =  this.getCell(row,column).innerHeight();
+		var type = this.coalesce(data["editorType"],"default");
+		var editor = this.options.editors[type];
+		var editingWidget = editor(data).hide().css({
+			"position":"absolute",
+			"top":position.top,
+			"left":position.left,
+			"height":height,
+			"width":width,
+			"padding":"0px",
+			"border":"0px",
+			"margin":"0px"
+		});
+		
+		var self = this;	
+		editingWidget.appendTo("body");
+		
+		editingWidget.fadeIn("fast").focus();
+		
+	},
+	
+	endEdit:function(row,column,editor){
+		this.setCellValue(row,column,editor.value());
+		
+	},
+	
+	_isUndefined:function(test){
+		return (typeof test === "undefined");
+	},
+
+	//coalesce Funcion. Returns the first non-undefined argument.
+	//False, 0 and "" are not considered undefined
+	coalesce:function(){
+		for (var i=0; i < arguments.length; i++) {
+			if(!this._isUndefined(arguments[i])){
+				return arguments[i];
+			}
+		};
+		return undefined;
+	}
 	
 	
 	

@@ -132,14 +132,35 @@
 			
 		});
 		
-		module("Behaviour");
 		
-	
+		module("Utility Functions");
+
+		test("Checking coalesce",function(){
+			var grid = $("div#result table").grid();
+			var bar,foo;
+			
+			ok(grid.grid("coalesce",undefined).jquery,"coalesce: Checking 1 parameter, undefined. The external Interface can not return an undefined value. It is Intercepted by the widget factory and the grid object is returned instead for chaining");
+			ok(grid.grid("coalesce",undefined,1)===1,"coalesce: Checking 2 parameter, undefined and 1");
+			ok(grid.grid("coalesce",bar,foo,"good")==="good","coalesce: Checking 3 parameter, foo,bar and \"test\"");
+			ok(grid.grid("coalesce",bar,foo,"good","yup")==="good","coalesce: Checking 4 parameter, foo,bar and \"test\" and \"yup\"");
+			ok(grid.grid("coalesce",bar,false,"good","yup")===false,"coalesce: Checking 4 parameter, bar and false and \"test\" and \"yup\"");
+			ok(grid.grid("coalesce",bar,"","good","yup")==="","coalesce: Checking 4 parameter, bar and \"\" and \"test\" and \"yup\"");
+			ok(grid.grid("coalesce",bar,0,"good","yup")===0,"coalesce: Checking 4 parameter, bar and \"\" and \"test\" and \"yup\"");
+			
+			bar = {"index1":"value1","index2":"value2"};
+						
+			ok(grid.grid("coalesce",bar["noIndex"],2,"good","yup")===2,"coalesce: Checking 4 parameter, bar[noIndex] and \"\" and \"test\" and \"yup\"");			
+			
+			
+		})
+		
+		module("Behaviour");
 		
 		test("Testing Dirty Cells",function(){
 			var grid = $("div#result table").grid();
 			
 			var original = grid.grid("getColumnValues",1);
+
 			
 			same(grid.grid("getCell",1,1).text(),"0","Get Cell works correctly");
 			var cell = grid.grid("getCell",1,1);
@@ -219,11 +240,17 @@
 			
 			same(grid.grid("getCellValue",1,1),"0","Asserting Correct getCellValue");
 			
+			var rowPreviousToSetCellValue = grid.grid("getRowValuesByOrder",1);
+			
+			rowPreviousToSetCellValue[0]="Blah/Blah";
+			
 			grid.grid("setCellValue",1,1,"Blah/Blah");
 			
 			same(grid.grid("getCellValue",1,1),"Blah/Blah","Asserting Correct setCellValue");
 			
 			same(grid.grid("getRowCount"),8,"Asserting Correct rowCount");
+			
+			same(grid.grid("getRowValuesByOrder",1),rowPreviousToSetCellValue,"Asserting that the rest of the row is intact")
 			
 			
 			//inserting a new row WITH id
