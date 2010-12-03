@@ -8,7 +8,9 @@
 	<meta name="generator" content="TextMate http://macromates.com/">
 	<meta name="author" content="Ezequiel Nuske">
 	<!-- Date: 2010-11-20 -->
-	<link type="text/css" href="lib/css/smoothness/jquery-ui-1.8.6.custom.css" rel="stylesheet"/>	
+	<!-- <link type="text/css" href="lib/css/smoothness/jquery-ui-1.8.6.custom.css" rel="stylesheet"/> -->
+	<link type="text/css" href="lib/css/start/jquery-ui-1.8.6.custom.css" rel="stylesheet"/>	
+	
 	<script type="text/javascript" src="lib/js/jquery-1.4.2.min.js"></script>
 	
 	<!-- <script type="text/javascript" src="http://code.jquery.com/jquery-1.4.4.js"></script> -->
@@ -132,8 +134,86 @@
 			
 		});
 		
+		module("Simplified Interface");
+		
+		test("Testing Row Access",function(){
+			var grid = $("div#result table").grid();
+			
+			//READ
+			var firstRow = grid.grid("row",1);
+			ok(firstRow.jquery,"row: Returns a Wrapped Set");
+			ok(firstRow.length===1,"row: Returns 1 element");
+			ok(firstRow.is("tr"),"row: Returns a TR element");
+			ok(firstRow.find("td").length===4,"row: Has 4 td element");
+
+			firstRow = grid.grid("row",1,"array");
+			ok(firstRow.length===4,"row(1): Is a 4 elment array");
+			same(firstRow,["0","1","2","3"],"row(1): Expects Array result");
+			
+
+			firstRow = grid.grid("row",1,"object");
+			ok($.isPlainObject(firstRow),"row(1,object): Is an object");
+			same(firstRow,{"first":"0","second":"1","third":"2","fourth":"3"},"row(1,object): Expects Object Result");
+			
+			var firstAndSecondRows = grid.grid("row",[1,2],"object");
+			ok(firstAndSecondRows.push,"row([1,2],object): Is an object");
+			same(firstAndSecondRows,[
+				{"first":"0","second":"1","third":"2","fourth":"3"},
+				{"first":"342","second":"165","third":"2","fourth":"331"}
+			],"row([1,2],object): Expects Array of Object Result");	
+			
+			
+			//UPDATE
+			grid.grid("row",1,[-1,-2,-3,-4]);
+			firstRow = grid.grid("row",1,"array");			
+			same(firstRow,[-1,-2,-3,-4],"row(1,[-1,-2,-3,-4]): inserts data from array correctly");
+			
+			grid.grid("row",1,{"first":99,"second":100,"third":101,"fourth":102});
+			firstRow = grid.grid("row",1,"object");			
+			same(firstRow,{"first":99,"second":100,"third":101,"fourth":102},"row(1,{\"first\":99,\"second\":100,\"third\":101,\"fourth\":102}): inserts data from object correctly");
+			
+			grid.grid("row",[1,2],[{"first":"a","second":"b","third":"c","fourth":"d"},{"first":"e","second":"f","third":"g","fourth":"h"}]);
+			firstRow = grid.grid("row",[1,2],"object");
+			same(firstRow,[{"first":"a","second":"b","third":"c","fourth":"d"},{"first":"e","second":"f","third":"g","fourth":"h"}],"row:([1,2],[{\"first\":\"a\",\"second\":\"b\",\"third\":\"c\",\"fourth\":\"d\"},{\"first\":\"e\",\"second\":\"f\",\"third\":\"g\",\"fourth\":\"h\"}]) Inserts an Object Array and Reads it");			
+			
+			//Create
+			grid.grid("row",["I'm","a","new","row"],"add");
+			firstRow = grid.grid("row",":last","array");
+			same(firstRow,["I'm","a","new","row"],"row: New Row Created from array");
+
+			grid.grid("row",{"first":"I'm","second":"another","third":"new","fourth":"row"});//add is implied
+			firstRow = grid.grid("row",":last","object");
+			same(firstRow,{"first":"I'm","second":"another","third":"new","fourth":"row"},"row: New Row created from json");						
+			
+			
+			
+		});
+		test("Testing Col Access",function(){
+			var grid = $("div#result table").grid();
+			
+		});
+		test("Testing Cell Access",function(){
+			var grid = $("div#result table").grid();
+			
+		});
 		
 		module("Utility Functions");
+		
+		test("Checking isDeepArray",function(){
+			
+			var grid = $("div#expected table").grid();
+			
+			ok(grid.grid("isDeepArray",[[]]),"isDeepArray: true for double empty ([[]])");
+			ok(grid.grid("isDeepArray",[[1,2],[3,4]]),"isDeepArray: true for [[1,2],[3,4]]");
+			ok(grid.grid("isDeepArray",[{"hi":"there"},{"how":"are you?"}]),"isDeepArray: true for [{hi:there},{how:are you?}]");
+			ok(!grid.grid("isDeepArray",[1,2]),"isDeepArray: false for [1,2]");
+			ok(!grid.grid("isDeepArray",[1,[1,2,3]]),"isDeepArray: false for [1,[1,2,3]]");			
+			ok(grid.grid("isDeepArray",[[1]]),"isDeepArray: true for [[1]]");			
+			
+			
+			
+			
+		});
 
 		test("Checking coalesce",function(){
 			var grid = $("div#result table").grid();
@@ -434,6 +514,12 @@
 				
 			}}});
 			grid.grid("refresh");
+			
+			
+			
+			//grid.grid("options","url","heavy.csv");
+			//grid.grid("refresh");
+			
 		});
 		
 		test("Testing Ajax XML",8,function(){
@@ -465,7 +551,7 @@
 		$(document).ready(function(){
 			$('div#main').hide();
 			//$('#manual').grid();
-			$('#manual').grid({url:"data.json"}).grid("refresh");
+			//$('#manual').grid({url:"heavy.csv",ajaxOptions:{dataType:"text"}}).grid("refresh");
 			$('table:last').grid();
 			
 		});

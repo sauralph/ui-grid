@@ -95,7 +95,10 @@ $.widget( "ui.grid", {
 			"default":function(cellData){
 				return $("<input/>",{"value":cellData.value,"type":"text"}).blur(function(){
 					cellData.gridInstance.setCellValue(cellData.rowOrdinal,cellData.columnOrdinal,$(this).val());
-					$(this).remove();
+					$(this).fadeOut("fast",function(){
+						$(this).remove();
+					});
+					
 				}).keydown(function(event){
 					var keyCode = $.ui.keyCode;
 					var grid = cellData.gridInstance;
@@ -104,28 +107,29 @@ $.widget( "ui.grid", {
 					switch ( event.keyCode ) {
 						case keyCode.RIGHT:
 							grid.editCell(row,col+1);
-							$(this).remove();							
+							$(this).blur();							
 							break;
 						case keyCode.DOWN:
 							grid.editCell(row+1,col);
-							$(this).remove();							
+							$(this).blur();							
 							break;
 						case keyCode.LEFT:
 							grid.editCell(row,col-1);
-							$(this).remove();							
+							$(this).blur();							
 							break;
 						case keyCode.UP:
 							grid.editCell(row-1,col);
-							$(this).remove();							
+							$(this).blur();							
 							break;
 						case keyCode.ENTER:
-							this.blur();
+							$(this).blur();
 							break;
 						case keyCode.ESCAPE:
 							//do not commit
-							$(this).unbind("blur");
+							$(this).unbind("blur").fadeOut("fast",function(){
+								$(this).remove();
+							});
 							//exit mode
-							$(this).remove();
 					}
 				});
 			}
@@ -265,6 +269,7 @@ $.widget( "ui.grid", {
 			self.menu.data("column",$(this).parent("th").index()+1);
 		});	
 		
+		
 	},
 	sort:function(column,fn){
 		switch(typeof fn){
@@ -309,10 +314,24 @@ $.widget( "ui.grid", {
 	},
 	
 	getRowByOrder:function(row){
-		return this.element.find("tr:eq("+row+")");
+		var selector;
+		if(row.push){
+			row = row.join("), tr:eq(");
+		}
+		
+		if(row.toString().indexOf(":")===0){
+			selector = row.toString();
+		}else{
+			selector = ":eq(".concat(row.toString(),")");
+		}
+		
+		return this.element.find("tr"+selector);
 	},
 	
 	getRowById:function(id){
+		if($.isArray(id)){
+			id = id.join(", tr#");
+		}
 		return this.element.find("tr#"+id);
 	},
 	
@@ -470,7 +489,7 @@ $.widget( "ui.grid", {
 		opts.success = function(data, textStatus, XMLHttpRequest){
 			//console.dir(data);
 			this.insertRows(data,data.idField);
-			this._index();
+			//this._index();
 		}
 		$.ajax(opts);
 	},
@@ -500,6 +519,18 @@ $.widget( "ui.grid", {
 	
 	insertRows:function(data,id_reference){
 		var rows;
+		var current_id;
+		var ids=[];
+		
+		if(id_reference){
+			if($.isArray(id_reference)){
+				ids=id_reference;
+			}else if(id_reference["jquery"]){
+				ids=id_reference;
+			
+			}
+		}
+		
 		if(data.data){
 			rows=data.data;
 		}else if($.isPlainObject(data)||$.isArray(data)){
@@ -507,11 +538,8 @@ $.widget( "ui.grid", {
 		}
 		
 		for (var i=0; i < rows.length; i++) {
-			if(rows[i][id_reference]){
-				this.insertRow(rows[i],rows[i][id_reference]);
-			}else{
-				this.insertRow(rows[i],false);
-			}
+			current_id = this.coalesce(rows[i][id_reference],ids[i],false);
+			this.insertRow(rows[i],current_id);
 		}
 		
 	},
@@ -539,19 +567,32 @@ $.widget( "ui.grid", {
 	
 	insertRow:function(row,id){
 		var tr;
+		var attached = false;
+
 		if(!id){
 			id = "auto_generated_id_".concat(Math.ceil(Math.random()*1000000));
 			tr = $("<tr/>",{id:id});
 		}else{
-			//check if the row exists
-			tr = $("tr#"+id);
-			if(!tr.length){
-				tr = $("<tr/>",{"id":id});
+			//if id is coming by Row Reference
+			if(id.jquery&&id.is("tr")){
+				tr=id;
+				attached=true;
+			}else if(id.tagName && id.tagName==="TR"){
+				tr = $(id);
+				attached=true;
 			}else{
-				//empty de row
-				tr.empty();
+				//check if the row exists
+				tr = this.getRowById(id);
+				if(!tr.length){
+					tr = $("<tr/>",{"id":id});
+				}else{
+					attached=true;
+				}				
 			}
 		}
+		
+		//clearup all row data;
+		tr.empty();
 
 		var columnNames = this.getColumnNames();
 		
@@ -562,20 +603,26 @@ $.widget( "ui.grid", {
 		for (var i=0; i < columnNames.length; i++) {
 			
 			column = isArray?i:columnNames[i];
+			cell = $("<td/>",{"html":"&nbsp;","class":"ui-widget-content"});
+			
 			if(row[column]){
-				cell = $("<td/>",{"html":row[column],"class":"ui-widget-content"});
-
-			}else{
-				cell = $("<td/>",{"html":"&nbsp;","class":"ui-widget-content"});
-				
+				this.setCellValue(cell,row[column]);
 			}
 			tr.append(cell);
 		};
 		
 
-
-		this.element.find("tbody").append(tr)
+		if(!attached){
+			this.element.find("tbody").append(tr);
+		}
 		
+		this._index();
+		
+	},
+	
+	_parseDataIntoTr:function(data,id){
+
+
 	},
 	
 	_index:function(){
@@ -618,7 +665,7 @@ $.widget( "ui.grid", {
 		var self = this;	
 		editingWidget.appendTo("body");
 		
-		editingWidget.fadeIn("fast").focus();
+		editingWidget.fadeIn("fast").focus().select();
 		
 	},
 	
@@ -640,8 +687,106 @@ $.widget( "ui.grid", {
 			}
 		};
 		return undefined;
-	}
+	},
 	
+	isDeepArray:function(array) {
+		if($.isArray(array)&&array.length>0){
+			return($.isArray(array[0])||$.isPlainObject(array[0]));
+		}
+		
+	},
+	
+	row:function(idOrRowNumber,dataOrParameter){
+		//this function should know its mode by the following:
+		// if idOrRowNumber is String and dataOrParameter is Array|Object -> Create / Update (1|Many Rows)
+		// if idOrRowNumber is Array and dataOrParameter is Array|Object -> Create / Update (1|Many Rows)
+		// if idOrRowNumber is Array|object and dataOrParameter is Undefined -> Create / Update (1|Many Rows)
+		// if idOrRowNumber is String|Array and dataOrParameter is Undefined|String -> Read / Delete / Modify Metadata
+		
+		//keep reference to ui grid
+		var self =this;
+		var row;
+		
+		//If i'm getting an Object as first param, I'm implying the add Parameter
+		if($.isPlainObject(idOrRowNumber)){
+			dataOrParameter="add";
+		}else{
+			//The preferred method is by Id...
+			row=(this.getRowById(idOrRowNumber));
+			if(!row.length){
+				//if not found try by order
+				row=(this.getRowByOrder(idOrRowNumber));
+			}//if row
+			
+		}
+
+		var returned;
+		switch(dataOrParameter){
+			case "add":
+				//Data is Coming in Array Format
+				if($.isArray(idOrRowNumber) && idOrRowNumber.length>0){
+					var first = idOrRowNumber[0];
+					//data has more than 1 row (more than 1 dimension)
+					if($.isArray(first)||$.isPlainObject(first)){
+						this.insertRows(idOrRowNumber);
+					}else{
+						//Only 1 row array
+						this.insertRow(idOrRowNumber);
+					}
+				}else{
+					if($.isPlainObject(idOrRowNumber)){
+						this.insertRow(idOrRowNumber);
+					}
+				}
+							
+				break;
+			case "array":
+				//Build an Array
+				returned = row.map(function(i,e){ //For each row
+					return $(e).find("td").map(function(ind,ele){//For each cell
+						return self.getCellValue($(ele)); 
+					}).get();//Return Cell Array
+				}).get();///Return Row Array
+				break;
+			case "object":
+				//Build an Object Array, or simple Object
+				returned = row.map(function(i,e){
+					var object = {};
+					var values = $(e).find("td").map(function(ind,ele){
+						return self.getCellValue($(ele));
+					}).get();
+					
+					var columnNames = self.getColumnNames();
+					for (var i=0; i < columnNames.length; i++) {
+						object[columnNames[i]]=values[i];
+					};
+					
+					return object;	
+				}).get();
+				if(returned.length===1){
+					returned = returned[0];
+				}
+			
+				break;	
+			case "deep":
+			default:
+				//Ok Got here, data is an object or an array?
+				if($.isPlainObject(dataOrParameter)||$.isArray(dataOrParameter)){
+					if(this.isDeepArray(dataOrParameter)){
+						this.insertRows(dataOrParameter,row)
+						
+					}else{
+						this.insertRow(dataOrParameter,row);
+					}
+					
+				}else{
+					returned = row;	
+				}
+			
+		}//switch dataOrParam
+		
+		return returned;
+}
 	
 	
 });
